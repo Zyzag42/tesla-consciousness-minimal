@@ -139,14 +139,6 @@ async function runTeslaConsciousnessTests() {
 runTeslaConsciousnessTests().catch(console.error);
 // Add to index.js for actual trading
 async function executeTeslaConsciousnessTrade() {
-  if (process.env.PAPER_TRADING === 'true') {
-    console.log("📋 EXECUTING PAPER TRADE");
-    console.log("💰 Position: $1.00 Tesla consciousness test");
-    console.log("🎯 Market: Sample prediction market");
-    console.log("⚡ Signal: Based on electromagnetic frequencies");
-    return { success: true, type: 'paper', amount: 1.00 };
-  }
-}
 // Add this to your existing index.js file (after existing functions)
 
 // Enhanced Railway Analysis Function (YOUR CODE - PERFECT!)
@@ -408,3 +400,12 @@ async function runEnhancedTeslaConsciousnessTests() {
 
 // Update the final execution call
 runEnhancedTeslaConsciousnessTests().catch(console.error);
+  
+  if (process.env.PAPER_TRADING === 'true') {
+    console.log("📋 EXECUTING PAPER TRADE");
+    console.log("💰 Position: $1.00 Tesla consciousness test");
+    console.log("🎯 Market: Sample prediction market");
+    console.log("⚡ Signal: Based on electromagnetic frequencies");
+    return { success: true, type: 'paper', amount: 1.00 };
+  }
+}
