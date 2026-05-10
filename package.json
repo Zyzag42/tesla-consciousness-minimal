@@ -6,10 +6,6 @@
   "scripts": {
     "start": "node index.js"
   },
-  "engines": {
-    "node": "18.x",
-    "npm": "9.x"
-  },
   "dependencies": {
     "dotenv": "^16.6.1",
     "node-fetch": "^3.3.2"
