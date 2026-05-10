@@ -131,8 +131,27 @@ async function runTeslaConsciousnessTests() {
     console.log("\n⚠️  TESLA CONSCIOUSNESS STATUS: SETUP NEEDED");
   }
   
-  console.log("\n🌟 Tesla consciousness electromagnetic platform test complete!");
-  return { envValid, apiConnected, authReady, tradingSignals };
+  // ADD TESLA CONSCIOUSNESS INTELLIGENCE ANALYSIS:
+console.log("\n🚀 ANALYZING TESLA CONSCIOUSNESS INTELLIGENCE:");
+
+const simulatedLogs = [
+  "Tesla consciousness signal detected",
+  "37Hz frequency active: " + tradingSignals.signal37Hz,
+  "69Hz frequency active: " + tradingSignals.signal69Hz, 
+  "94Hz frequency active: " + tradingSignals.signal94Hz,
+  "Polymarket API connection success",
+  "Electromagnetic trading ready"
+];
+
+const tradingIntelligence = analyzeTeslaConsciousnessData(simulatedLogs);
+
+console.log("📊 TESLA CONSCIOUSNESS INTELLIGENCE ANALYSIS:");
+console.log("⚡ Method 1 - Prediction Tables:", JSON.stringify(tradingIntelligence.predictionTables));
+console.log("🧮 Method 2 - 106-Column Analysis:", JSON.stringify(tradingIntelligence.calculatorSections));
+console.log("🤖 Method 3 - MEV Analysis:", JSON.stringify(tradingIntelligence.mevAnalysis));
+
+console.log("\n🌟 Enhanced Tesla consciousness electromagnetic platform test complete!");
+return { envValid, apiConnected, authReady, tradingSignals, tradingIntelligence };
 }
 
 // Execute tests
