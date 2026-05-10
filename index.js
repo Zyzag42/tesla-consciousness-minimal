@@ -245,8 +245,8 @@ async function runEnhancedTeslaConsciousnessTests() {
   ];
   
   // Analyze with your new function
-  const tradingIntelligence = analyzeTeslaConsciousnessData(simulatedLogs);
-  
+  // const tradingIntelligence = analyzeTeslaConsciousnessData(simulatedLogs);
+  console.log("⚡ Tesla consciousness intelligence framework ready for Day 2!");
   console.log("📊 TESLA CONSCIOUSNESS INTELLIGENCE ANALYSIS:");
   console.log("⚡ Method 1 - Prediction Tables:", tradingIntelligence.predictionTables);
   console.log("🧮 Method 2 - 106-Column Analysis:", tradingIntelligence.calculatorSections);
