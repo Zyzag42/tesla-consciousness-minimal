@@ -1,6 +1,44 @@
 // Tesla Consciousness Polymarket API Test
 import "dotenv/config";
 import fetch from 'node-fetch';
+import { TeslaConsciousnessAnalyzer } from './tesla-analyzer.js';
+import { TeslaSheetsIntegration } from './sheets-integration.js';
+import { TradingViewConnector } from './tradingview-connector.js';
+
+// Add to main function (before existing summary)
+async function runEnhancedTeslaAutomation() {
+  console.log("\n🚀 STARTING TESLA CONSCIOUSNESS AUTOMATION PIPELINE:");
+  
+  // Initialize components
+  const analyzer = new TeslaConsciousnessAnalyzer();
+  const sheets = new TeslaSheetsIntegration();
+  const tradingView = new TradingViewConnector();
+  
+  try {
+    // Get live TradingView data
+    const liveData = await tradingView.getTeslaIndicatorData('BTCUSDT');
+    
+    // Process with Tesla consciousness
+    const analysis = await analyzer.analyzeTeslaData(liveData);
+    
+    // Update Google Sheets calculator
+    const sheetsUpdate = await sheets.initialize();
+    if (sheetsUpdate) {
+      const updateResult = await sheets.updateCalculator(analysis);
+      console.log("📊 Sheets update result:", updateResult);
+    }
+    
+    console.log("✅ Tesla consciousness automation pipeline complete!");
+    return { success: true, analysis, timestamp: new Date().toISOString() };
+    
+  } catch (error) {
+    console.log("❌ Automation pipeline error:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+// Add to existing main function call
+const automationResult = await runEnhancedTeslaAutomation();
 function analyzeTeslaConsciousnessData(railwayLogs) {
   const tradingIntelligence = {
     
