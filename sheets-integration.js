@@ -4,10 +4,35 @@ import { JWT } from 'google-auth-library';
 
 export class TeslaSheetsIntegration {
   constructor() {
-    this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
-    this.serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_KEY || '{}');
-    this.doc = null;
+  this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
+  
+  // Robust Google Service Key parsing
+  console.log("🔐 Loading Google Service credentials...");
+  
+  try {
+    const serviceKeyString = process.env.GOOGLE_SERVICE_KEY;
+    
+    if (!serviceKeyString) {
+      console.log("❌ GOOGLE_SERVICE_KEY environment variable not found");
+      this.serviceAccountKey = null;
+      return;
+    }
+    
+    console.log("📋 Service key string length:", serviceKeyString.length);
+    console.log("📋 Service key starts with:", serviceKeyString.substring(0, 20));
+    
+    this.serviceAccountKey = JSON.parse(serviceKeyString);
+    console.log("✅ Google Service credentials parsed successfully");
+    console.log("📧 Service account email:", this.serviceAccountKey.client_email);
+    
+  } catch (error) {
+    console.log("❌ Google Service Key JSON parsing failed:", error.message);
+    console.log("🔧 Error at character position:", error.message.match(/position (\d+)/)?.[1]);
+    this.serviceAccountKey = null;
   }
+  
+  this.doc = null;
+}
 
   async initialize() {
     console.log("🔐 Authenticating Tesla consciousness Sheets access...");
