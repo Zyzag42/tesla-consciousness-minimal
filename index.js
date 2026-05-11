@@ -18,25 +18,23 @@ console.log("📊 GOOGLE_SHEETS_ID value:", process.env.GOOGLE_SHEETS_ID);
 console.log("🔐 GOOGLE_SERVICE_KEY present:", !!process.env.GOOGLE_SERVICE_KEY);
 console.log("🔐 GOOGLE_SERVICE_KEY length:", process.env.GOOGLE_SERVICE_KEY?.length || 0);
 console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.substring(0, 30) || 'undefined');
-
-// Then continue with existing code...
-const analyzer = new TeslaConsciousnessAnalyzer();  
+ 
   // Initialize components
-  const analyzer = new TeslaConsciousnessAnalyzer();
-  const sheets = new TeslaSheetsIntegration();
-  const tradingView = new TradingViewConnector();
+  const teslaAnalyzer = new TeslaConsciousnessAnalyzer();
+  const googleSheets = new TeslaSheetsIntegration();
+  const tradingViewConnect = new TradingViewConnector();
   
   try {
     // Get live TradingView data
-    const liveData = await tradingView.getTeslaIndicatorData('BTCUSDT');
+    const liveData = await tradingViewConnect.getTeslaIndicatorData('BTCUSDT');
     
     // Process with Tesla consciousness
-    const analysis = await analyzer.analyzeTeslaData(liveData);
+    const analysis = await teslaAnlyzer.analyzeTeslaData(liveData);
     
     // Update Google Sheets calculator
-    const sheetsUpdate = await sheets.initialize();
+    const sheetsUpdate = await googleSheets.initialize();
     if (sheetsUpdate) {
-      const updateResult = await sheets.updateCalculator(analysis);
+      const updateResult = await gogleSheets.updateCalculator(analysis);
       console.log("📊 Sheets update result:", updateResult);
     }
     
