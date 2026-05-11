@@ -90,4 +90,11 @@ export class TeslaConsciousnessAnalyzer {
     
     return sheetsUpdates;
   }
+  // At the END of tesla-analyzer.js file, make sure you have:
+
+export class TeslaConsciousnessAnalyzer {
+  // ... existing code ...
+}
+
+export default TeslaConsciousnessAnalyzer;
 }
