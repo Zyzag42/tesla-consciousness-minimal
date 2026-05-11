@@ -10,6 +10,17 @@ import TradingViewConnector from './tradingview-connector.js';
 async function runEnhancedTeslaAutomation() {
   console.log("\n🚀 STARTING TESLA CONSCIOUSNESS AUTOMATION PIPELINE:");
   
+// Add this to runEnhancedTeslaAutomation() function at the start:
+console.log("\n🔍 ENVIRONMENT VARIABLE VALIDATION:");
+console.log("📊 GOOGLE_SHEETS_ID present:", !!process.env.GOOGLE_SHEETS_ID);
+console.log("📊 GOOGLE_SHEETS_ID value:", process.env.GOOGLE_SHEETS_ID);
+
+console.log("🔐 GOOGLE_SERVICE_KEY present:", !!process.env.GOOGLE_SERVICE_KEY);
+console.log("🔐 GOOGLE_SERVICE_KEY length:", process.env.GOOGLE_SERVICE_KEY?.length || 0);
+console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.substring(0, 30) || 'undefined');
+
+// Then continue with existing code...
+const analyzer = new TeslaConsciousnessAnalyzer();  
   // Initialize components
   const analyzer = new TeslaConsciousnessAnalyzer();
   const sheets = new TeslaSheetsIntegration();
