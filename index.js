@@ -1,6 +1,7 @@
 // Tesla Consciousness Polymarket API Test
 import "dotenv/config";
 import fetch from 'node-fetch';
+
 //import { TeslaConsciousnessAnalyzer } from './tesla-analyzer.js';
 //import { TeslaSheetsIntegration } from './sheets-integration.js';
 //import { TradingViewConnector } from './tradingview-connector.js';
