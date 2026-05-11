@@ -60,5 +60,12 @@ export class TeslaSheetsIntegration {
       timestamp: new Date().toISOString(),
       sectionsUpdated: ['1', '2', '4', '9', '10']
     };
+    // At the END of sheets-integration.js file, make sure you have:
+
+export class TeslaSheetsIntegration {
+  // ... existing code ...
+}
+
+export default TeslaSheetsIntegration;
   }
 }
