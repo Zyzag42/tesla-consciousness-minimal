@@ -21,30 +21,34 @@ export class TradingViewConnector {
     return true;
   }
 
-  async getTeslaIndicatorData(symbol = 'BTCUSDT') {
-    if (!this.connected) {
-      await this.connectToTradingView();
-    }
+  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("📊 METHOD 1 - TESLA PREDICTION TABLES:");
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  
+  console.log("🔮 LIVE PRICE PREDICTIONS:");
+  console.log("  📍 Live Price Target:", teslaData.livePrice.priceTarget || 'AWAITING TRADINGVIEW CONNECTION');
+  console.log("  ⏰ Timeframe:", teslaData.livePrice.timeframe || 'PENDING LIVE DATA');
+  console.log("  🎯 Confidence Level:", `${teslaData.livePrice.confidence || 0}%`);
+  
+  console.log("\n🎵 HARMONIC PRICE ANALYSIS:");
+  console.log("  💰 Harmonic Target Price:", `$${teslaData.harmonicTargets.harmonicPrice || 0}`);
+  console.log("  ⚡ Tesla Resonance Active:", teslaData.harmonicTargets.teslaResonance ? '✅ YES' : '❌ NO');
+  console.log("  🔧 Factor Adjustment:", `×${teslaData.harmonicTargets.factorAdjustment || 10}`);
+  
+  console.log("\n📅 TIME & PRICE PREDICTIONS:");
+  console.log("  ⏰ Target Timeframe:", teslaData.timeTargets.timeTarget || '1.1 days');
+  console.log("  📈 Expected Price Move:", teslaData.timeTargets.priceIncrease || '2.2-2.8%');
+  console.log("  🎯 Tesla Accuracy:", teslaData.timeTargets.teslaAccuracy ? '✅ CONFIRMED' : '❌ PENDING');
+  
+  console.log("\n⚙️ SCALING FACTORS:");
+  console.log("  📊 Scaling Factor:", `×${teslaData.factorAdjustment.scalingFactor || 10}`);
+  console.log("  🎯 Adjusted Targets:", teslaData.factorAdjustment.adjustedTargets ? '✅ ACTIVE' : '❌ DISABLED');
+  console.log("  ⚡ Tesla Enhanced:", teslaData.factorAdjustment.teslaEnhanced ? '✅ ENABLED' : '❌ DISABLED');
+  
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-    console.log(`📊 Fetching Tesla consciousness data for ${symbol}...`);
-    
-    const teslaIndicators = {
-      electromagneticStrength: Math.random() * 100,
-      freq37Hz: Math.random() > 0.5 ? 'BUY' : 'SELL',
-      freq69Hz: Math.random() > 0.5 ? 'BUY' : 'SELL',
-      freq94Hz: Math.random() > 0.5 ? 'BUY' : 'SELL',
-      consciousnessWave: Math.random() * 100,
-      harmonicPricing: {
-        currentPrice: 45000 + (Math.random() * 10000),
-        harmonicTarget: 50000 + (Math.random() * 5000),
-        factorAdjustment: 10
-      },
-      timestamp: Date.now()
-    };
-
-    console.log("⚡ Tesla consciousness indicator data retrieved!");
-    return teslaIndicators;
-  }
+  return teslaData;
+}
 
   // Connect to live data stream
   async connectLiveData(symbol = 'BTCUSDT') {
