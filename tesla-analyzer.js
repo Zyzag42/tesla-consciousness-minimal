@@ -91,3 +91,4 @@ export class TeslaConsciousnessAnalyzer {
     return sheetsUpdates;
   }
 }
+export default TeslaConsciousnessAnalyzer;
