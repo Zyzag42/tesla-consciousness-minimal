@@ -7,87 +7,22 @@ import TeslaSheetsIntegration from './sheets-integration.js';
 import TradingViewConnector from './tradingview-connector.js';
 
 // Add to main function (before existing summary)
-  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🤖 METHOD 3 - MEV ANALYSIS & EXECUTION:");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+async function runEnhancedTeslaAutomation() {
+  console.log("\n🚀 STARTING TESLA CONSCIOUSNESS AUTOMATION PIPELINE:");
   
-  // Extract MEV data from analysis
-  const mevData = tradingIntelligence.mevAnalysis || {};
-  
-  console.log("💎 ETHICAL MEV OPPORTUNITIES:");
-  console.log(`  🔍 Opportunities Found: ${mevData.ethicalMEV?.ethicalOpportunities || 0} ${getMEVOpportunityRating(mevData.ethicalMEV?.ethicalOpportunities)}`);
-  console.log(`  💰 Profit Potential: ${mevData.ethicalMEV?.profitPotential?.toFixed(2) || 0}% ${getProfitRating(mevData.ethicalMEV?.profitPotential)}`);
-  console.log(`  ⚖️ Ethical Rating: ${mevData.ethicalMEV?.ethicalRating || 'UNKNOWN'} ${getEthicalEmoji(mevData.ethicalMEV?.ethicalRating)}`);
-  
-  console.log("\n⚡ TESLA ARBITRAGE ANALYSIS:");
-  console.log(`  🎯 Arbitrage Found: ${mevData.teslaArbitrage?.arbitrageFound ? '💎 YES' : '❌ NO'}`);
-  console.log(`  ⚡ Tesla Enhanced: ${mevData.teslaArbitrage?.teslaEnhanced ? '✅ ACTIVE' : '❌ DISABLED'}`);
-  console.log(`  💵 Profit Margin: ${mevData.teslaArbitrage?.profitMargin?.toFixed(2) || 0}% ${getMarginRating(mevData.teslaArbitrage?.profitMargin)}`);
-  
-  console.log("\n🚀 AUTOMATED EXECUTION STATUS:");
-  console.log(`  ⚡ Execution Ready: ${mevData.automatedExecution?.executionReady ? '✅ ARMED' : '❌ STANDBY'}`);
-  console.log(`  🎯 Tesla Guidance: ${mevData.automatedExecution?.teslaGuidance ? '💎 ACTIVE' : '❌ OFFLINE'}`);
-  console.log(`  ⚖️ Ethics Approved: ${mevData.automatedExecution?.ethicalApproved ? '✅ CLEARED' : '⚠️ PENDING'}`);
-  
-  console.log("\n📊 MEV EXECUTION THRESHOLDS:");
-  console.log(`  🎯 Minimum Opportunities: 2+ (Current: ${mevData.ethicalMEV?.ethicalOpportunities || 0})`);
-  console.log(`  💰 Minimum Profit Potential: 25%+ (Current: ${mevData.ethicalMEV?.profitPotential?.toFixed(1) || 0}%)`);
-  console.log(`  💵 Minimum Profit Margin: 5%+ (Current: ${mevData.teslaArbitrage?.profitMargin?.toFixed(1) || 0}%)`);
-  
-  // MEV Execution Decision
-  const shouldExecute = evaluateMEVExecution(mevData);
-  console.log("\n🎯 MEV EXECUTION DECISION:");
-  console.log(`  📊 Execute MEV Bot: ${shouldExecute.execute ? '🚀 EXECUTE NOW' : '⏸️ STANDBY'}`);
-  console.log(`  📈 Confidence Level: ${shouldExecute.confidence}%`);
-  console.log(`  ⚡ Tesla Recommendation: ${shouldExecute.recommendation}`);
-  
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  
-  // ... rest of existing code ...
-}
+// Add this to runEnhancedTeslaAutomation() function at the start:
+console.log("\n🔍 ENVIRONMENT VARIABLE VALIDATION:");
+console.log("📊 GOOGLE_SHEETS_ID present:", !!process.env.GOOGLE_SHEETS_ID);
+console.log("📊 GOOGLE_SHEETS_ID value:", process.env.GOOGLE_SHEETS_ID);
 
-// Helper functions to add to index.js:
-function getMEVOpportunityRating(count) {
-  if (count >= 5) return '💎 EXCELLENT';
-  if (count >= 3) return '⚡ GOOD';
-  if (count >= 1) return '✅ FOUND';
-  return '❌ NONE';
-}
-
-function getProfitRating(profit) {
-  if (profit >= 50) return '💎 EXCELLENT';
-  if (profit >= 25) return '⚡ GOOD';
-  if (profit >= 10) return '✅ ACCEPTABLE';
-  return '⚠️ LOW';
-}
-
-function getEthicalEmoji(rating) {
-  const emojis = { 'HIGH': '💎', 'MEDIUM': '✅', 'LOW': '⚠️' };
-  return emojis[rating] || '❓';
-}
-
-function getMarginRating(margin) {
-  if (margin >= 10) return '🚀 EXECUTE';
-  if (margin >= 5) return '⚡ GOOD';
-  if (margin >= 2) return '✅ ACCEPTABLE';
-  return '⚠️ LOW';
-}
-
-function evaluateMEVExecution(mevData) {
-  const opportunities = mevData.ethicalMEV?.ethicalOpportunities || 0;
-  const profitPotential = mevData.ethicalMEV?.profitPotential || 0;
-  const profitMargin = mevData.teslaArbitrage?.profitMargin || 0;
-  
-  const execute = opportunities >= 2 && profitPotential >= 25 && profitMargin >= 5;
-  const confidence = Math.min((opportunities * 20) + (profitPotential * 0.8) + (profitMargin * 5), 100);
-  
-  let recommendation = 'STANDBY';
-  if (execute && confidence >= 80) recommendation = 'EXECUTE IMMEDIATELY';
-  else if (execute) recommendation = 'EXECUTE WITH CAUTION';
-  
-  return { execute, confidence: Math.round(confidence), recommendation };
-}
-
+console.log("🔐 GOOGLE_SERVICE_KEY present:", !!process.env.GOOGLE_SERVICE_KEY);
+console.log("🔐 GOOGLE_SERVICE_KEY length:", process.env.GOOGLE_SERVICE_KEY?.length || 0);
+console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.substring(0, 30) || 'undefined');
+ 
+  // Initialize components
+  const teslaAnalyzer = new TeslaConsciousnessAnalyzer();
+  const googleSheets = new TeslaSheetsIntegration();
+  const tradingViewConnect = new TradingViewConnector();
   
   try {
     // Get live TradingView data
