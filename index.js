@@ -473,3 +473,5 @@ async function executeTeslaConsciousnessTrade() {
 // Add this to your existing index.js file (after existing functions)
   }
 }
+
+export default TeslaConsciousnessAnalyzer;
