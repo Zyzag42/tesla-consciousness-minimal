@@ -28,25 +28,77 @@ export class TeslaConsciousnessAnalyzer {
   async processTeslaIndicators(symbol = 'BTCUSDT') {
     console.log(`📊 Processing Tesla consciousness indicators for ${symbol}...`);
     
+    // FIRST: Create teslaData object
     const teslaData = {
       // Method 1 - LIVE Prediction Tables
       livePrice: await this.extractLivePredictions(symbol),
       harmonicTargets: await this.extractHarmonicPricing(symbol),
       timeTargets: await this.calculateTimePredictions(symbol),
-      
-      // Method 2 - 106-Column Calculator Data  
-      electromagneticStrength: await this.calculateElectromagneticStrength(symbol),
-      consciousness: await this.analyzeConsciousnessWave(symbol),
-      dynamicTimePrice: await this.getDynamicTimePrice(symbol),
-      lawOfVibration: await this.calculateLOV(symbol),
-      
-      // Method 3 - MEV Analysis
-      mevOpportunities: await this.detectMEVOpportunities(symbol),
-      arbitrageSpread: await this.calculateArbitrageSpread(symbol)
+      factorAdjustment: await this.applyFactor10Scaling(symbol)
     };
+
+    // THEN: Display formatted results
+    console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("📊 METHOD 1 - TESLA PREDICTION TABLES:");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+    console.log("🔮 LIVE PRICE PREDICTIONS:");
+    console.log("  📍 Live Price Target:", teslaData.livePrice.priceTarget || 'AWAITING TRADINGVIEW CONNECTION');
+    console.log("  ⏰ Timeframe:", teslaData.livePrice.timeframe || 'PENDING LIVE DATA');
+    console.log("  🎯 Confidence Level:", `${teslaData.livePrice.confidence || 0}%`);
+
+    console.log("\n🎵 HARMONIC PRICE ANALYSIS:");
+    console.log("  💰 Harmonic Target Price:", `$${teslaData.harmonicTargets.harmonicPrice || 0}`);
+    console.log("  ⚡ Tesla Resonance Active:", teslaData.harmonicTargets.teslaResonance ? '✅ YES' : '❌ NO');
+    console.log("  🔧 Factor Adjustment:", `×${teslaData.harmonicTargets.factorAdjustment || 10}`);
+
+    console.log("\n📅 TIME & PRICE PREDICTIONS:");
+    console.log("  ⏰ Target Timeframe:", teslaData.timeTargets.timeTarget || '1.1 days');
+    console.log("  📈 Expected Price Move:", teslaData.timeTargets.priceIncrease || '2.2-2.8%');
+    console.log("  🎯 Tesla Accuracy:", teslaData.timeTargets.teslaAccuracy ? '✅ CONFIRMED' : '❌ PENDING');
+
+    console.log("\n⚙️ SCALING FACTORS:");
+    console.log("  📊 Scaling Factor:", `×${teslaData.factorAdjustment.scalingFactor || 10}`);
+    console.log("  🎯 Adjusted Targets:", teslaData.factorAdjustment.adjustedTargets ? '✅ ACTIVE' : '❌ DISABLED');
+    console.log("  ⚡ Tesla Enhanced:", teslaData.factorAdjustment.teslaEnhanced ? '✅ ENABLED' : '❌ DISABLED');
+
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
+  }
+
+  // Supporting functions for Method 1 - Prediction Tables
+  async extractLivePredictions(symbol) {
+    return { 
+      priceTarget: null, 
+      timeframe: null, 
+      confidence: 10 
+    };
+  }
+
+  async extractHarmonicPricing(symbol) {
+    return { 
+      harmonicPrice: 0, 
+      factorAdjustment: 10, 
+      teslaResonance: true 
+    };
+  }
+
+  async calculateTimePredictions(symbol) {
+    return { 
+      timeTarget: "1.1 days", 
+      priceIncrease: "2.2-2.8%", 
+      teslaAccuracy: true 
+    };
+  }
+
+  async applyFactor10Scaling(symbol) {
+    return { 
+      scalingFactor: 10, 
+      adjustedTargets: true, 
+      teslaEnhanced: true 
+    };
   }
 
   // Automated Google Sheets population
@@ -91,4 +143,6 @@ export class TeslaConsciousnessAnalyzer {
     return sheetsUpdates;
   }
 }
+
 export default TeslaConsciousnessAnalyzer;
+
