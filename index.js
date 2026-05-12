@@ -279,7 +279,7 @@ function prepareMEVExecution(logs) {
 // Add this to your existing runTeslaConsciousnessTests() function:
 async function runEnhancedTeslaConsciousnessTests() {
   // Run your existing tests first
-  const existingResults = await runTeslaConsciousnessTests();
+  const existingResults = await runEnhancedTeslaAutomation();
   
   // Add Tesla consciousness intelligence analysis
   console.log("\n🚀 ANALYZING TESLA CONSCIOUSNESS INTELLIGENCE:");
