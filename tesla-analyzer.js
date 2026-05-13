@@ -69,6 +69,11 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  🎯 Consciousness Level: ${teslaData.section2?.consciousnessLevel || 'MEDIUM'}`);
     console.log(`  ⚡ Tesla Intelligence: ${teslaData.section2?.teslaIntelligence ? '✅ ACTIVE' : '❌ INACTIVE'}`);
 
+    console.log("\n⏰ SECTION 3 - DYNAMIC TIME & PRICE:");
+    console.log(`  🕐 Dynamic Time: ${new Date(teslaData.section3?.dynamicTime || Date.now()).toLocaleString()}`);
+    console.log(`  💰 Price Differential: $${teslaData.section3?.dynamicPrice?.toFixed(2) || 0}`);
+    console.log(`  🎯 Time-Price Active: ${teslaData.section3?.timePrice ? '✅ YES' : '❌ NO'}`);
+    
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
   }
