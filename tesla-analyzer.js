@@ -179,34 +179,7 @@ export class TeslaConsciousnessAnalyzer {
     };
   }
 
-  // Add these helper functions after the existing ones in tesla-analyzer.js:
 
-function getOBFZoneStrength(strength) {
-  if (!strength) return '';
-  if (strength >= 80) return '🔥 VERY STRONG';
-  if (strength >= 60) return '⚡ STRONG';
-  if (strength >= 40) return '✅ MODERATE';
-  return '⚠️ WEAK';
-}
-
-function getOrderBlockRating(blocks) {
-  if (!blocks || blocks === 0) return '';
-  if (blocks >= 5) return '🔥 HEAVY INSTITUTIONAL';
-  if (blocks >= 3) return '⚡ STRONG INSTITUTIONAL';
-  if (blocks >= 1) return '✅ MODERATE';
-  return '';
-}
-
-function getTrendEmoji(trend) {
-  const emojis = { 
-    'BULLISH': '🚀', 
-    'BEARISH': '📉', 
-    'NEUTRAL': '➡️',
-    'SIDEWAYS': '↔️' 
-  };
-  return emojis[trend] || '';
-}
-  
   // Automated Google Sheets population
   async populateSheetsCalculator(teslaData) {
     console.log("📋 Populating Tesla consciousness Sheets calculator...");
@@ -262,5 +235,32 @@ function getTrendEmoji(trend) {
   }
 }
 
-export default TeslaConsciousnessAnalyzer;
 
+// Helper functions for OBF zone and order block display
+function getOBFZoneStrength(strength) {
+  if (!strength) return '';
+  if (strength >= 80) return '🔥 VERY STRONG';
+  if (strength >= 60) return '⚡ STRONG';
+  if (strength >= 40) return '✅ MODERATE';
+  return '⚠️ WEAK';
+}
+
+function getOrderBlockRating(blocks) {
+  if (!blocks || blocks === 0) return '';
+  if (blocks >= 5) return '🔥 HEAVY INSTITUTIONAL';
+  if (blocks >= 3) return '⚡ STRONG INSTITUTIONAL';
+  if (blocks >= 1) return '✅ MODERATE';
+  return '';
+}
+
+function getTrendEmoji(trend) {
+  const emojis = {
+    'BULLISH': '🚀',
+    'BEARISH': '📉',
+    'NEUTRAL': '➡️',
+    'SIDEWAYS': '↔️'
+  };
+  return emojis[trend] || '';
+}
+
+export default TeslaConsciousnessAnalyzer;
