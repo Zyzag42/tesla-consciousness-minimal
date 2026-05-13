@@ -23,7 +23,7 @@ console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.s
   const teslaAnalyzer = new TeslaConsciousnessAnalyzer();
   const googleSheets = new TeslaSheetsIntegration();
   const tradingViewConnect = new TradingViewConnector();
-  
+
   try {
     // Get live TradingView data
     const liveData = await tradingViewConnect.getTeslaIndicatorData('BTCUSDT');
