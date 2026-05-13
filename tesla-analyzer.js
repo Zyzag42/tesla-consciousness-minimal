@@ -83,11 +83,33 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  🔄 Inversion Detected: ${teslaData.section5?.inversionDetected ? '⚠️ YES' : '✅ NO'}`);
     console.log(`  🎼 Harmonic Level: ${teslaData.section5?.harmonicLevel?.toFixed(2) || 0}%`);
 
-    console.log("\n📈 SECTION 6 - INSTITUTIONAL INDICATORS:");
+    console.log("\n📈 SECTION 6A - STANDARD INDICATORS:");
     console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
     console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
     console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
     console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
+
+    console.log("\n🏛️ SECTION 6B - INSTITUTIONAL ORDER FLOW:");
+    console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
+    console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
+    console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
+    console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
+  
+  // Enhanced OBF (Order Block Finder) Analysis
+    console.log(`  🟢 OBF Buy Zone: ${teslaData.section6?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'} ${getOBFZoneStrength(teslaData.section6?.obfBuyStrength)}`);
+    console.log(`  🔵 OBF Sell Zone: ${teslaData.section6?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'} ${getOBFZoneStrength(teslaData.section6?.obfSellStrength)}`);
+    console.log(`  ⚪ Bullish Order Blocks: ${teslaData.section6?.bullishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bullishOrderBlocks)}`);
+    console.log(`  🟡 Bearish Order Blocks: ${teslaData.section6?.bearishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bearishOrderBlocks)}`);
+  
+  // Enhanced OFA (Order Flow Analysis) Signals
+    console.log(`  💚 Green Diamond (Buy): ${teslaData.section6?.greenDiamond ? '🚀 STRONG BUY' : '❌ NONE'}`);
+    console.log(`  🔴 Red Circle (Sell): ${teslaData.section6?.redCircle ? '📉 STRONG SELL' : '✅ NONE'}`);
+    console.log(`  💜 Purple Diamond (Reversal): ${teslaData.section6?.purpleDiamond ? '⚠️ REVERSAL POINT' : '✅ STABLE'}`);
+  
+  // Institutional Support/Resistance Levels
+    console.log(`  📈 Institutional Support: $${teslaData.section6?.institutionalSupport?.toFixed(0) || 0}`);
+    console.log(`  📉 Institutional Resistance: $${teslaData.section6?.institutionalResistance?.toFixed(0) || 0}`);
+    console.log(`  📊 OFA Trend Direction: ${teslaData.section6?.ofaTrendDirection || 'NEUTRAL'} ${getTrendEmoji(teslaData.section6?.ofaTrendDirection)}`);
 
     console.log("\n🎶 SECTION 7 - SOLFEGGIO FREQUENCIES:");
     console.log(`  🎵 396Hz (Liberation): ${teslaData.section7?.freq396 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
@@ -157,6 +179,34 @@ export class TeslaConsciousnessAnalyzer {
     };
   }
 
+  // Add these helper functions after the existing ones in tesla-analyzer.js:
+
+function getOBFZoneStrength(strength) {
+  if (!strength) return '';
+  if (strength >= 80) return '🔥 VERY STRONG';
+  if (strength >= 60) return '⚡ STRONG';
+  if (strength >= 40) return '✅ MODERATE';
+  return '⚠️ WEAK';
+}
+
+function getOrderBlockRating(blocks) {
+  if (!blocks || blocks === 0) return '';
+  if (blocks >= 5) return '🔥 HEAVY INSTITUTIONAL';
+  if (blocks >= 3) return '⚡ STRONG INSTITUTIONAL';
+  if (blocks >= 1) return '✅ MODERATE';
+  return '';
+}
+
+function getTrendEmoji(trend) {
+  const emojis = { 
+    'BULLISH': '🚀', 
+    'BEARISH': '📉', 
+    'NEUTRAL': '➡️',
+    'SIDEWAYS': '↔️' 
+  };
+  return emojis[trend] || '';
+}
+  
   // Automated Google Sheets population
   async populateSheetsCalculator(teslaData) {
     console.log("📋 Populating Tesla consciousness Sheets calculator...");
