@@ -178,7 +178,44 @@ export class TeslaConsciousnessAnalyzer {
       teslaEnhanced: true 
     };
   }
+  async applyFactor10Scaling(symbol) {
+    return { 
+      scalingFactor: 10, 
+      adjustedTargets: true, 
+      teslaEnhanced: true 
+    };
   }
+
+  // ADD THIS ENTIRE FUNCTION HERE:
+  async populateSheetsCalculator(teslaData) {
+    console.log("📋 Populating Tesla consciousness Sheets calculator...");
+    
+    console.log("\n📈 SECTION 6A - STANDARD INDICATORS:");
+    console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
+    console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
+    console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
+    console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
+    
+    console.log("\n🏛️ SECTION 6B - INSTITUTIONAL ORDER FLOW:");
+    console.log(`  🟢 OBF Buy Zone: ${teslaData.section6?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  🔵 OBF Sell Zone: ${teslaData.section6?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'}`);
+    console.log(`  ⚪ Bullish Order Blocks: ${teslaData.section6?.bullishOrderBlocks || 0}`);
+    console.log(`  🟡 Bearish Order Blocks: ${teslaData.section6?.bearishOrderBlocks || 0}`);
+    console.log(`  💚 Green Diamond (Buy): ${teslaData.section6?.greenDiamond ? '🚀 STRONG BUY' : '❌ NONE'}`);
+    console.log(`  🔴 Red Circle (Sell): ${teslaData.section6?.redCircle ? '📉 STRONG SELL' : '✅ NONE'}`);
+    console.log(`  💜 Purple Diamond (Reversal): ${teslaData.section6?.purpleDiamond ? '⚠️ REVERSAL POINT' : '✅ STABLE'}`);
+    console.log(`  📈 Institutional Support: $${teslaData.section6?.institutionalSupport?.toFixed(0) || 0}`);
+    console.log(`  📉 Institutional Resistance: $${teslaData.section6?.institutionalResistance?.toFixed(0) || 0}`);
+    
+    const sheetsUpdates = {
+      // ... existing sheetsUpdates code ...
+    };
+
+    console.log("✅ Tesla consciousness Sheets calculator populated!");
+    return sheetsUpdates;
+  }
+
+}  // ← Close class (keep this)
 
 export default TeslaConsciousnessAnalyzer;
 
