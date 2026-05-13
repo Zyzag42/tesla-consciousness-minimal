@@ -64,84 +64,6 @@ export class TeslaConsciousnessAnalyzer {
 
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-    console.log("\n🧠 SECTION 2 - TESLA CONSCIOUSNESS WAVE:");
-    console.log(`  🌊 Wave Quality: ${teslaData.section2?.waveQuality?.toFixed(2) || 0}%`);
-    console.log(`  🎯 Consciousness Level: ${teslaData.section2?.consciousnessLevel || 'MEDIUM'}`);
-    console.log(`  ⚡ Tesla Intelligence: ${teslaData.section2?.teslaIntelligence ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-
-    console.log("\n⏰ SECTION 3 - DYNAMIC TIME & PRICE:");
-    console.log(`  🕐 Dynamic Time: ${new Date(teslaData.section3?.dynamicTime || Date.now()).toLocaleString()}`);
-    console.log(`  💰 Price Differential: $${teslaData.section3?.dynamicPrice?.toFixed(2) || 0}`);
-    console.log(`  🎯 Time-Price Active: ${teslaData.section3?.timePrice ? '✅ YES' : '❌ NO'}`);
-
-    console.log("\n📐 SECTION 4 - LAW OF VIBRATION (GANN):");
-    console.log(`  📊 Vibration Level: ${teslaData.section4?.vibrationLevel?.toFixed(2) || 0}`);
-    console.log(`  ⚖️ Gann Law Active: ${teslaData.section4?.gannLaw ? '✅ TRUE' : '❌ FALSE'}`);
-    console.log(`  📈 Vibration Signal: ${teslaData.section4?.vibrationSignal || 'NEUTRAL'}`);
-
-    console.log("\n🎵 SECTION 5 - HARMONIC INVERSIONS:");
-    console.log(`  🔄 Inversion Detected: ${teslaData.section5?.inversionDetected ? '⚠️ YES' : '✅ NO'}`);
-    console.log(`  🎼 Harmonic Level: ${teslaData.section5?.harmonicLevel?.toFixed(2) || 0}%`);
-
-    console.log("\n📈 SECTION 6A - STANDARD INDICATORS:");
-    console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
-    console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
-    console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
-    console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
-
-    console.log("\n🏛️ SECTION 6B - INSTITUTIONAL ORDER FLOW:");
-    console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
-    console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
-    console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
-    console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
-  
-  // Enhanced OBF (Order Block Finder) Analysis
-    console.log(`  🟢 OBF Buy Zone: ${teslaData.section6?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'} ${getOBFZoneStrength(teslaData.section6?.obfBuyStrength)}`);
-    console.log(`  🔵 OBF Sell Zone: ${teslaData.section6?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'} ${getOBFZoneStrength(teslaData.section6?.obfSellStrength)}`);
-    console.log(`  ⚪ Bullish Order Blocks: ${teslaData.section6?.bullishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bullishOrderBlocks)}`);
-    console.log(`  🟡 Bearish Order Blocks: ${teslaData.section6?.bearishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bearishOrderBlocks)}`);
-  
-  // Enhanced OFA (Order Flow Analysis) Signals
-    console.log(`  💚 Green Diamond (Buy): ${teslaData.section6?.greenDiamond ? '🚀 STRONG BUY' : '❌ NONE'}`);
-    console.log(`  🔴 Red Circle (Sell): ${teslaData.section6?.redCircle ? '📉 STRONG SELL' : '✅ NONE'}`);
-    console.log(`  💜 Purple Diamond (Reversal): ${teslaData.section6?.purpleDiamond ? '⚠️ REVERSAL POINT' : '✅ STABLE'}`);
-  
-  // Institutional Support/Resistance Levels
-    console.log(`  📈 Institutional Support: $${teslaData.section6?.institutionalSupport?.toFixed(0) || 0}`);
-    console.log(`  📉 Institutional Resistance: $${teslaData.section6?.institutionalResistance?.toFixed(0) || 0}`);
-    console.log(`  📊 OFA Trend Direction: ${teslaData.section6?.ofaTrendDirection || 'NEUTRAL'} ${getTrendEmoji(teslaData.section6?.ofaTrendDirection)}`);
-
-    console.log("\n🎶 SECTION 7 - SOLFEGGIO FREQUENCIES:");
-    console.log(`  🎵 396Hz (Liberation): ${teslaData.section7?.freq396 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-    console.log(`  💖 528Hz (Love): ${teslaData.section7?.freq528 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-    console.log(`  🌟 693Hz (Awakening): ${teslaData.section7?.freq693 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-    console.log(`  🗣️ 741Hz (Expression): ${teslaData.section7?.freq741 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-
-    console.log("\n⚡ SECTION 8 - TESLA CRITICAL (30-SEC):");
-    console.log(`  🚀 Acceleration: ${teslaData.section8?.acceleration || 'NEUTRAL'}`);
-    console.log(`  📊 Market Bias: ${teslaData.section8?.bias || 'NEUTRAL'}`);
-    console.log(`  🌟 Singularity: ${teslaData.section8?.singularity ? '⚠️ DETECTED' : '✅ NORMAL'}`);
-    console.log(`  ⏰ Timestamp: ${new Date(teslaData.section8?.last30seconds || Date.now()).toLocaleTimeString()}`);
-
-    console.log("\n💧 SECTION 9 - MEV1 LIQUIDITY DETECTION:");
-    console.log(`  💥 Liquidity Spike: ${teslaData.section9?.liquiditySpike ? '⚠️ DETECTED' : '✅ NORMAL'}`);
-    console.log(`  ⚡ Binary Invariant: ${teslaData.section9?.binaryInvariant ? '⚠️ VIOLATED' : '✅ STABLE'}`);
-    console.log(`  🎯 Violation Detected: ${teslaData.section9?.violationDetected ? '🚨 YES' : '✅ NO'}`);
-
-    console.log("\n🔄 SECTION 10 - MEV2 ARBITRAGE DETECTION:");
-    console.log(`  💰 Arbitrage Opportunity: ${teslaData.section10?.arbitrageOpportunity ? '💎 FOUND' : '❌ NONE'}`);
-    console.log(`  💵 Spread Detected: $${teslaData.section10?.spreadDetected?.toFixed(2) || 0}`);
-    console.log(`  ⚡ Tesla Arbitrage: ${teslaData.section10?.teslaArbitrage ? '✅ READY' : '❌ NOT READY'}`);
-
-    console.log("\n🌊 SECTION 11 - TESLA ENERGY CONFLUENCE:");
-    console.log(`  📊 Confluence Level: ${teslaData.section11?.confluenceLevel?.toFixed(2) || 0}%`);
-    console.log(`  ⚡ Energy Alignment: ${teslaData.section11?.energyAlignment ? '✅ ALIGNED' : '⚠️ MISALIGNED'}`);
-    console.log(`  🎯 Tesla Confluence: ${teslaData.section11?.teslaConfluence ? '💎 CONFIRMED' : '❌ PENDING'}`);
-
-    console.log("\n🎯 SECTION 12 - TRADING DECISION:");
-    console.log(`  📊 Final Decision: ${teslaData.section12_Decision || 'PROCESSING'}`);
-    console.log(`  🎯 Decision Confidence: ${teslaData.section11?.confluenceLevel?.toFixed(0) || 0}%`);
-    
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
   }
@@ -178,48 +100,151 @@ export class TeslaConsciousnessAnalyzer {
       teslaEnhanced: true 
     };
   }
-  async applyFactor10Scaling(symbol) {
-    return { 
-      scalingFactor: 10, 
-      adjustedTargets: true, 
-      teslaEnhanced: true 
-    };
-  }
 
-  // ADD THIS ENTIRE FUNCTION HERE:
+  // Automated Google Sheets population with Method 2 Display
   async populateSheetsCalculator(teslaData) {
     console.log("📋 Populating Tesla consciousness Sheets calculator...");
     
+    // Method 2 - 106-Column Analysis Display
+    console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("🧮 METHOD 2 - 106-COLUMN TESLA ANALYSIS:");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    
+    console.log("📡 SECTION 1 - TESLA ELECTROMAGNETIC ENERGY:");
+    console.log(`  🎯 37Hz Frequency: ${teslaData.section1?.frequency37Hz || 'PROCESSING'}`);
+    console.log(`  🎯 69Hz Frequency: ${teslaData.section1?.frequency69Hz || 'PROCESSING'}`);
+    console.log(`  🎯 94Hz Frequency: ${teslaData.section1?.frequency94Hz || 'PROCESSING'}`);
+    console.log(`  ⚡ Field Strength: ${teslaData.section1?.electromagneticStrength?.toFixed(2) || 0} ${getStrengthRating(teslaData.section1?.electromagneticStrength)}`);
+
+    console.log("\n🧠 SECTION 2 - TESLA CONSCIOUSNESS WAVE:");
+    console.log(`  🌊 Wave Quality: ${teslaData.section2?.waveQuality?.toFixed(2) || 0}% ${getWaveRating(teslaData.section2?.waveQuality)}`);
+    console.log(`  🎯 Consciousness Level: ${teslaData.section2?.consciousnessLevel || 'MEDIUM'}`);
+    console.log(`  ⚡ Tesla Intelligence: ${teslaData.section2?.teslaIntelligence ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
+    console.log("\n⏰ SECTION 3 - DYNAMIC TIME & PRICE:");
+    console.log(`  🕐 Dynamic Time: ${new Date(teslaData.section3?.dynamicTime || Date.now()).toLocaleString()}`);
+    console.log(`  💰 Price Differential: $${teslaData.section3?.dynamicPrice?.toFixed(2) || 0}`);
+    console.log(`  🎯 Time-Price Active: ${teslaData.section3?.timePrice ? '✅ YES' : '❌ NO'}`);
+
+    console.log("\n📐 SECTION 4 - LAW OF VIBRATION (GANN):");
+    console.log(`  📊 Vibration Level: ${teslaData.section4?.vibrationLevel?.toFixed(2) || 0}`);
+    console.log(`  ⚖️ Gann Law Active: ${teslaData.section4?.gannLaw ? '✅ TRUE' : '❌ FALSE'}`);
+    console.log(`  📈 Vibration Signal: ${teslaData.section4?.vibrationSignal || 'NEUTRAL'}`);
+
+    console.log("\n🎵 SECTION 5 - HARMONIC INVERSIONS:");
+    console.log(`  🔄 Inversion Detected: ${teslaData.section5?.inversionDetected ? '⚠️ YES' : '✅ NO'}`);
+    console.log(`  🎼 Harmonic Level: ${teslaData.section5?.harmonicLevel?.toFixed(2) || 0}%`);
+
     console.log("\n📈 SECTION 6A - STANDARD INDICATORS:");
     console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
     console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
     console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
     console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
-    
+
     console.log("\n🏛️ SECTION 6B - INSTITUTIONAL ORDER FLOW:");
-    console.log(`  🟢 OBF Buy Zone: ${teslaData.section6?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'}`);
-    console.log(`  🔵 OBF Sell Zone: ${teslaData.section6?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'}`);
-    console.log(`  ⚪ Bullish Order Blocks: ${teslaData.section6?.bullishOrderBlocks || 0}`);
-    console.log(`  🟡 Bearish Order Blocks: ${teslaData.section6?.bearishOrderBlocks || 0}`);
+    console.log(`  🟢 OBF Buy Zone: ${teslaData.section6?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'} ${getOBFZoneStrength(teslaData.section6?.obfBuyStrength)}`);
+    console.log(`  🔵 OBF Sell Zone: ${teslaData.section6?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'} ${getOBFZoneStrength(teslaData.section6?.obfSellStrength)}`);
+    console.log(`  ⚪ Bullish Order Blocks: ${teslaData.section6?.bullishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bullishOrderBlocks)}`);
+    console.log(`  🟡 Bearish Order Blocks: ${teslaData.section6?.bearishOrderBlocks || 0} ${getOrderBlockRating(teslaData.section6?.bearishOrderBlocks)}`);
     console.log(`  💚 Green Diamond (Buy): ${teslaData.section6?.greenDiamond ? '🚀 STRONG BUY' : '❌ NONE'}`);
     console.log(`  🔴 Red Circle (Sell): ${teslaData.section6?.redCircle ? '📉 STRONG SELL' : '✅ NONE'}`);
     console.log(`  💜 Purple Diamond (Reversal): ${teslaData.section6?.purpleDiamond ? '⚠️ REVERSAL POINT' : '✅ STABLE'}`);
     console.log(`  📈 Institutional Support: $${teslaData.section6?.institutionalSupport?.toFixed(0) || 0}`);
     console.log(`  📉 Institutional Resistance: $${teslaData.section6?.institutionalResistance?.toFixed(0) || 0}`);
+    console.log(`  📊 OFA Trend Direction: ${teslaData.section6?.ofaTrendDirection || 'NEUTRAL'} ${getTrendEmoji(teslaData.section6?.ofaTrendDirection)}`);
+
+    console.log("\n🎶 SECTION 7 - SOLFEGGIO FREQUENCIES:");
+    console.log(`  🎵 396Hz (Liberation): ${teslaData.section7?.freq396 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  💖 528Hz (Love): ${teslaData.section7?.freq528 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  🌟 693Hz (Awakening): ${teslaData.section7?.freq693 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  🗣️ 741Hz (Expression): ${teslaData.section7?.freq741 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
+    console.log("\n⚡ SECTION 8 - TESLA CRITICAL (30-SEC):");
+    console.log(`  🚀 Acceleration: ${teslaData.section8?.acceleration || 'NEUTRAL'}`);
+    console.log(`  📊 Market Bias: ${teslaData.section8?.bias || 'NEUTRAL'}`);
+    console.log(`  🌟 Singularity: ${teslaData.section8?.singularity ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+    console.log(`  ⏰ Timestamp: ${new Date(teslaData.section8?.last30seconds || Date.now()).toLocaleTimeString()}`);
+
+    console.log("\n💧 SECTION 9 - MEV1 LIQUIDITY DETECTION:");
+    console.log(`  💥 Liquidity Spike: ${teslaData.section9?.liquiditySpike ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+    console.log(`  ⚡ Binary Invariant: ${teslaData.section9?.binaryInvariant ? '⚠️ VIOLATED' : '✅ STABLE'}`);
+    console.log(`  🎯 Violation Detected: ${teslaData.section9?.violationDetected ? '🚨 YES' : '✅ NO'}`);
+
+    console.log("\n🔄 SECTION 10 - MEV2 ARBITRAGE DETECTION:");
+    console.log(`  💰 Arbitrage Opportunity: ${teslaData.section10?.arbitrageOpportunity ? '💎 FOUND' : '❌ NONE'}`);
+    console.log(`  💵 Spread Detected: $${teslaData.section10?.spreadDetected?.toFixed(2) || 0}`);
+    console.log(`  ⚡ Tesla Arbitrage: ${teslaData.section10?.teslaArbitrage ? '✅ READY' : '❌ NOT READY'}`);
+
+    console.log("\n🌊 SECTION 11 - TESLA ENERGY CONFLUENCE:");
+    console.log(`  📊 Confluence Level: ${teslaData.section11?.confluenceLevel?.toFixed(2) || 0}%`);
+    console.log(`  ⚡ Energy Alignment: ${teslaData.section11?.energyAlignment ? '✅ ALIGNED' : '⚠️ MISALIGNED'}`);
+    console.log(`  🎯 Tesla Confluence: ${teslaData.section11?.teslaConfluence ? '💎 CONFIRMED' : '❌ PENDING'}`);
+
+    console.log("\n🎯 SECTION 12 - TRADING DECISION:");
+    console.log(`  📊 Final Decision: ${teslaData.section12_Decision || 'PROCESSING'}`);
+    console.log(`  🎯 Decision Confidence: ${teslaData.section11?.confluenceLevel?.toFixed(0) || 0}%`);
+
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     
     const sheetsUpdates = {
-      // ... existing sheetsUpdates code ...
+      // Section 1 - Tesla Electromagnetic Energy
+      section1: {
+        electromagneticStrength: teslaData.electromagneticStrength,
+        frequency37Hz: teslaData.freq37Signal,
+        frequency69Hz: teslaData.freq69Signal,
+        frequency94Hz: teslaData.freq94Signal
+      },
+      
+      // Section 2 - Tesla Consciousness Wave Quality
+      section2: {
+        waveQuality: teslaData.consciousness?.waveQuality,
+        consciousnessLevel: teslaData.consciousness?.level,
+        intelligenceRating: teslaData.consciousness?.intelligence
+      },
+      
+      // Section 9 - MEV1 Liquidity Spike Detection
+      section9: {
+        liquiditySpike: teslaData.mevOpportunities?.liquidityDetected,
+        binaryInvariant: teslaData.mevOpportunities?.invariantViolation,
+        violationStrength: teslaData.mevOpportunities?.violationLevel
+      },
+      
+      // Section 10 - MEV2 Arbitrage Spread
+      section10: {
+        arbitrageOpportunity: teslaData.arbitrageSpread?.detected,
+        spreadValue: teslaData.arbitrageSpread?.profitPotential,
+        executionReady: teslaData.arbitrageSpread?.executionReady
+      }
     };
 
+    // Update Google Sheets via API
+    await this.updateGoogleSheets(sheetsUpdates);
     console.log("✅ Tesla consciousness Sheets calculator populated!");
+    
     return sheetsUpdates;
   }
-
-}  // ← Close class (keep this)
+}
 
 export default TeslaConsciousnessAnalyzer;
 
-// Helper functions OUTSIDE the class:
+// Helper functions for rating displays
+function getStrengthRating(strength) {
+  if (!strength) return '';
+  if (strength >= 90) return '💎 MAXIMUM';
+  if (strength >= 75) return '⚡ STRONG'; 
+  if (strength >= 50) return '✅ GOOD';
+  if (strength >= 25) return '⚠️ MODERATE';
+  return '❌ WEAK';
+}
+
+function getWaveRating(quality) {
+  if (!quality) return '';
+  if (quality >= 80) return '💎 EXCELLENT';
+  if (quality >= 60) return '⚡ GOOD';
+  if (quality >= 40) return '⚠️ MODERATE';
+  return '❌ POOR';
+}
+
 function getOBFZoneStrength(strength) {
   if (!strength) return '';
   if (strength >= 80) return '🔥 VERY STRONG';
@@ -245,61 +270,4 @@ function getTrendEmoji(trend) {
   };
   return emojis[trend] || '';
 }
- 
-  // Automated Google Sheets population
-  async populateSheetsCalculator(teslaData) {
-    console.log("📋 Populating Tesla consciousness Sheets calculator...");
-
-  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🧮 METHOD 2 - 106-COLUMN TESLA ANALYSIS:");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  
-  console.log("📡 SECTION 1 - TESLA ELECTROMAGNETIC ENERGY:");
-  console.log(`  🎯 37Hz Frequency: ${teslaData.section1?.frequency37Hz || 'PROCESSING'}`);
-  console.log(`  🎯 69Hz Frequency: ${teslaData.section1?.frequency69Hz || 'PROCESSING'}`);
-  console.log(`  🎯 94Hz Frequency: ${teslaData.section1?.frequency94Hz || 'PROCESSING'}`);
-  console.log(`  ⚡ Field Strength: ${teslaData.section1?.electromagneticStrength?.toFixed(2) || 0}`);
-  
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    
-    const sheetsUpdates = {
-      // Section 1 - Tesla Electromagnetic Energy
-      section1: {
-        electromagneticStrength: teslaData.electromagneticStrength,
-        frequency37Hz: teslaData.freq37Signal,
-        frequency69Hz: teslaData.freq69Signal,
-        frequency94Hz: teslaData.freq94Signal
-      },
-      
-      // Section 2 - Tesla Consciousness Wave Quality
-      section2: {
-        waveQuality: teslaData.consciousness.waveQuality,
-        consciousnessLevel: teslaData.consciousness.level,
-        intelligenceRating: teslaData.consciousness.intelligence
-      },
-      
-      // Section 9 - MEV1 Liquidity Spike Detection
-      section9: {
-        liquiditySpike: teslaData.mevOpportunities.liquidityDetected,
-        binaryInvariant: teslaData.mevOpportunities.invariantViolation,
-        violationStrength: teslaData.mevOpportunities.violationLevel
-      },
-      
-      // Section 10 - MEV2 Arbitrage Spread
-      section10: {
-        arbitrageOpportunity: teslaData.arbitrageSpread.detected,
-        spreadValue: teslaData.arbitrageSpread.profitPotential,
-        executionReady: teslaData.arbitrageSpread.executionReady
-      }
-    };
-
-    // Update Google Sheets via API
-    await this.updateGoogleSheets(sheetsUpdates);
-    console.log("✅ Tesla consciousness Sheets calculator populated!");
-    
-    return sheetsUpdates;
-  }
-}
-
-export default TeslaConsciousnessAnalyzer;
 
