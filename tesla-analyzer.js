@@ -178,9 +178,11 @@ export class TeslaConsciousnessAnalyzer {
       teslaEnhanced: true 
     };
   }
+}  // ← ADD THIS - CLOSES TeslaConsciousnessAnalyzer CLASS
 
-  // Add these helper functions after the existing ones in tesla-analyzer.js:
+export default TeslaConsciousnessAnalyzer;
 
+// Helper functions OUTSIDE the class:
 function getOBFZoneStrength(strength) {
   if (!strength) return '';
   if (strength >= 80) return '🔥 VERY STRONG';
