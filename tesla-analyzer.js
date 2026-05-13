@@ -78,6 +78,16 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  📊 Vibration Level: ${teslaData.section4?.vibrationLevel?.toFixed(2) || 0}`);
     console.log(`  ⚖️ Gann Law Active: ${teslaData.section4?.gannLaw ? '✅ TRUE' : '❌ FALSE'}`);
     console.log(`  📈 Vibration Signal: ${teslaData.section4?.vibrationSignal || 'NEUTRAL'}`);
+
+    console.log("\n🎵 SECTION 5 - HARMONIC INVERSIONS:");
+    console.log(`  🔄 Inversion Detected: ${teslaData.section5?.inversionDetected ? '⚠️ YES' : '✅ NO'}`);
+    console.log(`  🎼 Harmonic Level: ${teslaData.section5?.harmonicLevel?.toFixed(2) || 0}%`);
+
+    console.log("\n📈 SECTION 6 - INSTITUTIONAL INDICATORS:");
+    console.log(`  📊 RSI: ${teslaData.section6?.rsi?.toFixed(2) || 0}`);
+    console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
+    console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
+    console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
     
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
