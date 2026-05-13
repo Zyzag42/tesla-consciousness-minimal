@@ -178,7 +178,7 @@ export class TeslaConsciousnessAnalyzer {
       teslaEnhanced: true 
     };
   }
-}  // ← ADD THIS - CLOSES TeslaConsciousnessAnalyzer CLASS
+
 
 export default TeslaConsciousnessAnalyzer;
 
@@ -208,7 +208,7 @@ function getTrendEmoji(trend) {
   };
   return emojis[trend] || '';
 }
-  
+ 
   // Automated Google Sheets population
   async populateSheetsCalculator(teslaData) {
     console.log("📋 Populating Tesla consciousness Sheets calculator...");
