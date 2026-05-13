@@ -104,6 +104,18 @@ export class TeslaConsciousnessAnalyzer {
   // Automated Google Sheets population
   async populateSheetsCalculator(teslaData) {
     console.log("📋 Populating Tesla consciousness Sheets calculator...");
+
+  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("🧮 METHOD 2 - 106-COLUMN TESLA ANALYSIS:");
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  
+  console.log("📡 SECTION 1 - TESLA ELECTROMAGNETIC ENERGY:");
+  console.log(`  🎯 37Hz Frequency: ${teslaData.section1?.frequency37Hz || 'PROCESSING'}`);
+  console.log(`  🎯 69Hz Frequency: ${teslaData.section1?.frequency69Hz || 'PROCESSING'}`);
+  console.log(`  🎯 94Hz Frequency: ${teslaData.section1?.frequency94Hz || 'PROCESSING'}`);
+  console.log(`  ⚡ Field Strength: ${teslaData.section1?.electromagneticStrength?.toFixed(2) || 0}`);
+  
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     
     const sheetsUpdates = {
       // Section 1 - Tesla Electromagnetic Energy
