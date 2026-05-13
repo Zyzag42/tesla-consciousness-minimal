@@ -73,6 +73,11 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  🕐 Dynamic Time: ${new Date(teslaData.section3?.dynamicTime || Date.now()).toLocaleString()}`);
     console.log(`  💰 Price Differential: $${teslaData.section3?.dynamicPrice?.toFixed(2) || 0}`);
     console.log(`  🎯 Time-Price Active: ${teslaData.section3?.timePrice ? '✅ YES' : '❌ NO'}`);
+
+    console.log("\n📐 SECTION 4 - LAW OF VIBRATION (GANN):");
+    console.log(`  📊 Vibration Level: ${teslaData.section4?.vibrationLevel?.toFixed(2) || 0}`);
+    console.log(`  ⚖️ Gann Law Active: ${teslaData.section4?.gannLaw ? '✅ TRUE' : '❌ FALSE'}`);
+    console.log(`  📈 Vibration Signal: ${teslaData.section4?.vibrationSignal || 'NEUTRAL'}`);
     
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
