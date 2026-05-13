@@ -88,6 +88,18 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  📈 EMA Signal: ${teslaData.section6?.ema || 'NEUTRAL'}`);
     console.log(`  📊 MACD Signal: ${teslaData.section6?.macd || 'NEUTRAL'}`);
     console.log(`  📏 ATR: ${teslaData.section6?.atr?.toFixed(2) || 0}`);
+
+    console.log("\n🎶 SECTION 7 - SOLFEGGIO FREQUENCIES:");
+    console.log(`  🎵 396Hz (Liberation): ${teslaData.section7?.freq396 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  💖 528Hz (Love): ${teslaData.section7?.freq528 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  🌟 693Hz (Awakening): ${teslaData.section7?.freq693 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+    console.log(`  🗣️ 741Hz (Expression): ${teslaData.section7?.freq741 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
+    console.log("\n⚡ SECTION 8 - TESLA CRITICAL (30-SEC):");
+    console.log(`  🚀 Acceleration: ${teslaData.section8?.acceleration || 'NEUTRAL'}`);
+    console.log(`  📊 Market Bias: ${teslaData.section8?.bias || 'NEUTRAL'}`);
+    console.log(`  🌟 Singularity: ${teslaData.section8?.singularity ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+    console.log(`  ⏰ Timestamp: ${new Date(teslaData.section8?.last30seconds || Date.now()).toLocaleTimeString()}`);
     
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
