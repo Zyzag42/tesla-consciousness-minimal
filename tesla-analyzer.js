@@ -178,7 +178,7 @@ export class TeslaConsciousnessAnalyzer {
       teslaEnhanced: true 
     };
   }
-
+  }
 
 export default TeslaConsciousnessAnalyzer;
 
