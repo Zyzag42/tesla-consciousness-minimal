@@ -100,6 +100,25 @@ export class TeslaConsciousnessAnalyzer {
     console.log(`  📊 Market Bias: ${teslaData.section8?.bias || 'NEUTRAL'}`);
     console.log(`  🌟 Singularity: ${teslaData.section8?.singularity ? '⚠️ DETECTED' : '✅ NORMAL'}`);
     console.log(`  ⏰ Timestamp: ${new Date(teslaData.section8?.last30seconds || Date.now()).toLocaleTimeString()}`);
+
+    console.log("\n💧 SECTION 9 - MEV1 LIQUIDITY DETECTION:");
+    console.log(`  💥 Liquidity Spike: ${teslaData.section9?.liquiditySpike ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+    console.log(`  ⚡ Binary Invariant: ${teslaData.section9?.binaryInvariant ? '⚠️ VIOLATED' : '✅ STABLE'}`);
+    console.log(`  🎯 Violation Detected: ${teslaData.section9?.violationDetected ? '🚨 YES' : '✅ NO'}`);
+
+    console.log("\n🔄 SECTION 10 - MEV2 ARBITRAGE DETECTION:");
+    console.log(`  💰 Arbitrage Opportunity: ${teslaData.section10?.arbitrageOpportunity ? '💎 FOUND' : '❌ NONE'}`);
+    console.log(`  💵 Spread Detected: $${teslaData.section10?.spreadDetected?.toFixed(2) || 0}`);
+    console.log(`  ⚡ Tesla Arbitrage: ${teslaData.section10?.teslaArbitrage ? '✅ READY' : '❌ NOT READY'}`);
+
+    console.log("\n🌊 SECTION 11 - TESLA ENERGY CONFLUENCE:");
+    console.log(`  📊 Confluence Level: ${teslaData.section11?.confluenceLevel?.toFixed(2) || 0}%`);
+    console.log(`  ⚡ Energy Alignment: ${teslaData.section11?.energyAlignment ? '✅ ALIGNED' : '⚠️ MISALIGNED'}`);
+    console.log(`  🎯 Tesla Confluence: ${teslaData.section11?.teslaConfluence ? '💎 CONFIRMED' : '❌ PENDING'}`);
+
+    console.log("\n🎯 SECTION 12 - TRADING DECISION:");
+    console.log(`  📊 Final Decision: ${teslaData.section12_Decision || 'PROCESSING'}`);
+    console.log(`  🎯 Decision Confidence: ${teslaData.section11?.confluenceLevel?.toFixed(0) || 0}%`);
     
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
