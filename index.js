@@ -29,7 +29,7 @@ console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.s
     const liveData = await tradingViewConnect.getTeslaIndicatorData('BTCUSDT');
     
     // Process with Tesla consciousness
-    const analysis = await teslaAnlyzer.analyzeTeslaData(liveData);
+    const analysis = await teslaAnalyzer.analyzeTeslaData(liveData);
     
     // Update Google Sheets calculator
     const sheetsUpdate = await googleSheets.initialize();
