@@ -64,6 +64,11 @@ export class TeslaConsciousnessAnalyzer {
 
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
+    console.log("\n🧠 SECTION 2 - TESLA CONSCIOUSNESS WAVE:");
+    console.log(`  🌊 Wave Quality: ${teslaData.section2?.waveQuality?.toFixed(2) || 0}%`);
+    console.log(`  🎯 Consciousness Level: ${teslaData.section2?.consciousnessLevel || 'MEDIUM'}`);
+    console.log(`  ⚡ Tesla Intelligence: ${teslaData.section2?.teslaIntelligence ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
     console.log("⚡ Tesla consciousness analysis complete!");
     return teslaData;
   }
