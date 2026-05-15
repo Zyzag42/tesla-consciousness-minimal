@@ -1,9 +1,11 @@
 // File: tradingview-connector.js
 import { LiveTradingViewConnector } from './live-tradingview-connector.js';
 import { WebSocketManager } from './websocket-manager.js';
+import { EventEmitter } from 'events';
 
 export default class TradingViewConnector {
   constructor() {
+    super();
     this.connected = false;
     this.symbol = 'BTCUSDT';
     this.websocketConnection = null;
