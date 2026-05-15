@@ -3,7 +3,7 @@ import { LiveTradingViewConnector } from './live-tradingview-connector.js';
 import { WebSocketManager } from './websocket-manager.js';
 import { EventEmitter } from 'events';
 
-export default class TradingViewConnector {
+export default class TradingViewConnector extends EventEmitter {
   constructor() {
     super();
     this.connected = false;
