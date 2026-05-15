@@ -1,5 +1,8 @@
 // File: tradingview-connector.js
-export class TradingViewConnector {
+import { LiveTradingViewConnector } from './live-tradingview-connector.js';
+import { WebSocketManager } from './websocket-manager.js';
+
+export default class TradingViewConnector {
   constructor() {
     this.connected = false;
     this.symbol = 'BTCUSDT';
@@ -12,6 +15,10 @@ export class TradingViewConnector {
       'tesla_harmonic_pricing',
       'tesla_consciousness_wave'
     ];
+    // NEW: Live trading components
+    this.liveConnector = new LiveTradingViewConnector();
+    this.wsManager = new WebSocketManager();
+    this.isLiveMode = false;
   }
 
   async connectToTradingView() {
@@ -44,6 +51,46 @@ export class TradingViewConnector {
 
     console.log("⚡ Tesla consciousness indicator data retrieved!");
     return teslaIndicators;
+  }
+
+  // NEW: Enable live data stream
+  async enableLiveDataStream(symbol = 'BTCUSDT') {
+    console.log("🚀 Enabling live TradingView data stream...");
+    
+    try {
+      await this.liveConnector.connectLiveData(symbol);
+      this.isLiveMode = true;
+      
+      // Set up data event handler
+      this.liveConnector.on('marketData', (data) => {
+        this.processLiveMarketData(data);
+      });
+      
+      console.log("✅ Live TradingView data stream enabled!");
+      return true;
+    } catch (error) {
+      console.log("❌ Failed to enable live data stream:", error);
+      return false;
+    }
+  }
+
+  // NEW: Process live market data
+  async processLiveMarketData(marketData) {
+    console.log("📊 Processing live market data:", marketData.symbol);
+    
+    // Emit live data to other components
+    this.emit('liveData', marketData);
+    
+    return marketData;
+  }
+
+  // NEW: Disable live data stream
+  async disableLiveDataStream() {
+    if (this.isLiveMode) {
+      this.liveConnector.disconnect();
+      this.isLiveMode = false;
+      console.log("❌ Live data stream disabled");
+    }
   }
 
   // Connect to live data stream
@@ -82,5 +129,3 @@ export class TradingViewConnector {
     };
   }
 }
-
-export default TradingViewConnector;
