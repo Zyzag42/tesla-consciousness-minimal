@@ -120,6 +120,84 @@ async function runEnhancedTeslaAutomation() {
   console.log("📊 TESLA CONSCIOUSNESS INTELLIGENCE ANALYSIS:");
   console.log("⚡ Method 1 - Prediction Tables:", tradingIntelligence.predictionTables);
   console.log("🧮 Method 2 - 106-Column Analysis:", tradingIntelligence.calculatorSections);
+
+// COMPLETE Method 2 - ALL 12 SECTIONS Display
+  console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("🧮 METHOD 2 - 106-COLUMN TESLA ANALYSIS:");
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  console.log("📡 SECTION 1 - TESLA ELECTROMAGNETIC ENERGY:");
+  console.log(`  🎯 37Hz Frequency: ${tradingIntelligence.calculatorSections?.section1_Tesla?.frequency37Hz || 'PROCESSING'}`);
+  console.log(`  🎯 69Hz Frequency: ${tradingIntelligence.calculatorSections?.section1_Tesla?.frequency69Hz || 'PROCESSING'}`);
+  console.log(`  🎯 94Hz Frequency: ${tradingIntelligence.calculatorSections?.section1_Tesla?.frequency94Hz || 'PROCESSING'}`);
+  console.log(`  ⚡ Field Strength: ${tradingIntelligence.calculatorSections?.section1_Tesla?.electromagneticStrength?.toFixed(2) || 0}`);
+
+  console.log("\n🧠 SECTION 2 - TESLA CONSCIOUSNESS WAVE:");
+  console.log(`  🌊 Wave Quality: ${tradingIntelligence.calculatorSections?.section2_Consciousness?.waveQuality?.toFixed(2) || 0}%`);
+  console.log(`  🎯 Consciousness Level: ${tradingIntelligence.calculatorSections?.section2_Consciousness?.consciousnessLevel || 'MEDIUM'}`);
+  console.log(`  ⚡ Tesla Intelligence: ${tradingIntelligence.calculatorSections?.section2_Consciousness?.teslaIntelligence ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
+  console.log("\n⏰ SECTION 3 - DYNAMIC TIME & PRICE:");
+  console.log(`  🕐 Dynamic Time: ${new Date(tradingIntelligence.calculatorSections?.section3_DynamicTime?.dynamicTime || Date.now()).toLocaleString()}`);
+  console.log(`  💰 Price Differential: $${tradingIntelligence.calculatorSections?.section3_DynamicTime?.dynamicPrice?.toFixed(2) || 0}`);
+  console.log(`  🎯 Time-Price Active: ${tradingIntelligence.calculatorSections?.section3_DynamicTime?.timePrice ? '✅ YES' : '❌ NO'}`);
+
+  console.log("\n📐 SECTION 4 - LAW OF VIBRATION (GANN):");
+  console.log(`  📊 Vibration Level: ${tradingIntelligence.calculatorSections?.section4_LOV?.vibrationLevel?.toFixed(2) || 0}`);
+  console.log(`  ⚖️ Gann Law Active: ${tradingIntelligence.calculatorSections?.section4_LOV?.gannLaw ? '✅ TRUE' : '❌ FALSE'}`);
+  console.log(`  📈 Vibration Signal: ${tradingIntelligence.calculatorSections?.section4_LOV?.vibrationSignal || 'NEUTRAL'}`);
+
+  console.log("\n🎵 SECTION 5 - HARMONIC INVERSIONS:");
+  console.log(`  🔄 Inversion Detected: ${tradingIntelligence.calculatorSections?.section5_HarmonicInversions?.inversionDetected ? '⚠️ YES' : '✅ NO'}`);
+  console.log(`  🎼 Harmonic Level: ${tradingIntelligence.calculatorSections?.section5_HarmonicInversions?.harmonicLevel?.toFixed(2) || 0}%`);
+
+  console.log("\n📈 SECTION 6A - STANDARD INDICATORS:");
+  console.log(`  📊 RSI: ${tradingIntelligence.calculatorSections?.section6_Institutional?.rsi?.toFixed(2) || 0}`);
+  console.log(`  📈 EMA Signal: ${tradingIntelligence.calculatorSections?.section6_Institutional?.ema || 'NEUTRAL'}`);
+  console.log(`  📊 MACD Signal: ${tradingIntelligence.calculatorSections?.section6_Institutional?.macd || 'NEUTRAL'}`);
+  console.log(`  📏 ATR: ${tradingIntelligence.calculatorSections?.section6_Institutional?.atr?.toFixed(2) || 0}`);
+
+  console.log("\n🏛️ SECTION 6B - INSTITUTIONAL ORDER FLOW:");
+  console.log(`  🟢 OBF Buy Zone: ${tradingIntelligence.calculatorSections?.section6_Institutional?.obfBuyZone ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+  console.log(`  🔵 OBF Sell Zone: ${tradingIntelligence.calculatorSections?.section6_Institutional?.obfSellZone ? '⚠️ ACTIVE' : '✅ CLEAR'}`);
+  console.log(`  ⚪ Bullish Order Blocks: ${tradingIntelligence.calculatorSections?.section6_Institutional?.bullishOrderBlocks || 0}`);
+  console.log(`  🟡 Bearish Order Blocks: ${tradingIntelligence.calculatorSections?.section6_Institutional?.bearishOrderBlocks || 0}`);
+  console.log(`  💚 Green Diamond (Buy): ${tradingIntelligence.calculatorSections?.section6_Institutional?.greenDiamond ? '🚀 STRONG BUY' : '❌ NONE'}`);
+  console.log(`  🔴 Red Circle (Sell): ${tradingIntelligence.calculatorSections?.section6_Institutional?.redCircle ? '📉 STRONG SELL' : '✅ NONE'}`);
+  console.log(`  💜 Purple Diamond (Reversal): ${tradingIntelligence.calculatorSections?.section6_Institutional?.purpleDiamond ? '⚠️ REVERSAL POINT' : '✅ STABLE'}`);
+
+  console.log("\n🎶 SECTION 7 - SOLFEGGIO FREQUENCIES:");
+  console.log(`  🎵 396Hz (Liberation): ${tradingIntelligence.calculatorSections?.section7_Solfeggio?.freq396 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+  console.log(`  💖 528Hz (Love): ${tradingIntelligence.calculatorSections?.section7_Solfeggio?.freq528 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+  console.log(`  🌟 693Hz (Awakening): ${tradingIntelligence.calculatorSections?.section7_Solfeggio?.freq693 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+  console.log(`  🗣️ 741Hz (Expression): ${tradingIntelligence.calculatorSections?.section7_Solfeggio?.freq741 ? '✅ ACTIVE' : '❌ INACTIVE'}`);
+
+  console.log("\n⚡ SECTION 8 - TESLA CRITICAL (30-SEC):");
+  console.log(`  🚀 Acceleration: ${tradingIntelligence.calculatorSections?.section8_TeslaCritical?.acceleration || 'NEUTRAL'}`);
+  console.log(`  📊 Market Bias: ${tradingIntelligence.calculatorSections?.section8_TeslaCritical?.bias || 'NEUTRAL'}`);
+  console.log(`  🌟 Singularity: ${tradingIntelligence.calculatorSections?.section8_TeslaCritical?.singularity ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+  console.log(`  ⏰ Timestamp: ${new Date(tradingIntelligence.calculatorSections?.section8_TeslaCritical?.last30seconds || Date.now()).toLocaleTimeString()}`);
+
+  console.log("\n💧 SECTION 9 - MEV1 LIQUIDITY DETECTION:");
+  console.log(`  💥 Liquidity Spike: ${tradingIntelligence.calculatorSections?.section9_MEV1?.liquiditySpike ? '⚠️ DETECTED' : '✅ NORMAL'}`);
+  console.log(`  ⚡ Binary Invariant: ${tradingIntelligence.calculatorSections?.section9_MEV1?.binaryInvariant ? '⚠️ VIOLATED' : '✅ STABLE'}`);
+  console.log(`  🎯 Violation Detected: ${tradingIntelligence.calculatorSections?.section9_MEV1?.violationDetected ? '🚨 YES' : '✅ NO'}`);
+
+  console.log("\n🔄 SECTION 10 - MEV2 ARBITRAGE DETECTION:");
+  console.log(`  💰 Arbitrage Opportunity: ${tradingIntelligence.calculatorSections?.section10_MEV2?.arbitrageOpportunity ? '💎 FOUND' : '❌ NONE'}`);
+  console.log(`  💵 Spread Detected: $${tradingIntelligence.calculatorSections?.section10_MEV2?.spreadDetected?.toFixed(2) || 0}`);
+  console.log(`  ⚡ Tesla Arbitrage: ${tradingIntelligence.calculatorSections?.section10_MEV2?.teslaArbitrage ? '✅ READY' : '❌ NOT READY'}`);
+
+  console.log("\n🌊 SECTION 11 - TESLA ENERGY CONFLUENCE:");
+  console.log(`  📊 Confluence Level: ${tradingIntelligence.calculatorSections?.section11_Confluence?.confluenceLevel?.toFixed(2) || 0}%`);
+  console.log(`  ⚡ Energy Alignment: ${tradingIntelligence.calculatorSections?.section11_Confluence?.energyAlignment ? '✅ ALIGNED' : '⚠️ MISALIGNED'}`);
+  console.log(`  🎯 Tesla Confluence: ${tradingIntelligence.calculatorSections?.section11_Confluence?.teslaConfluence ? '💎 CONFIRMED' : '❌ PENDING'}`);
+
+  console.log("\n🎯 SECTION 12 - TRADING DECISION:");
+  console.log(`  📊 Final Decision: ${tradingIntelligence.calculatorSections?.section12_Decision || 'PROCESSING'}`);
+  console.log(`  🎯 Decision Confidence: ${tradingIntelligence.calculatorSections?.section11_Confluence?.confluenceLevel?.toFixed(0) || 0}%`);
+
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("🤖 Method 3 - MEV Analysis:", tradingIntelligence.mevAnalysis);
 
   console.log("\n🌟 Enhanced Tesla consciousness electromagnetic platform test complete!");
