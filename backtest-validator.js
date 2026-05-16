@@ -245,6 +245,4 @@ class TradingViewAlertProcessor {
   }
 }
 
-export default BacktestValidator;
 
-export default BacktestValidator;
