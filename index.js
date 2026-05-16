@@ -5,7 +5,7 @@ import { TeslaLiveAnalyzer } from './tesla-live-analyzer.js';
 import { BacktestValidator } from './backtest-validator.js';
 import { PolymarketSynchronizer } from './polymarket-synchronizer.js';
 import { WebSocketManager } from './websocket-manager.js';
-import TeslaConsciousnessAnalyzer from './tesla-analyzer.js';
+import { TeslaLiveAnalyzer } from './tesla-live-analyzer.js';
 import TeslaSheetsIntegration from './sheets-integration.js';
 import TradingViewConnector from './tradingview-connector.js';
 
@@ -67,12 +67,26 @@ async function runEnhancedTeslaAutomation() {
   console.log("🔐 GOOGLE_SERVICE_KEY length:", process.env.GOOGLE_SERVICE_KEY?.length || 0);
   console.log("🔐 GOOGLE_SERVICE_KEY starts:", process.env.GOOGLE_SERVICE_KEY?.substring(0, 30) || 'undefined');
  
-  const teslaAnalyzer = new TeslaConsciousnessAnalyzer();
+  const teslaAnalyzer = new TeslaLiveAnalyzer();
   const googleSheets = new TeslaSheetsIntegration();
   const tradingViewConnect = new TradingViewConnector();
 
   let existingResults;
+  
+// AFTER INSTANTIATION, ADD:
+await teslaAnalyzer.initializeLiveAnalysis();
 
+// WHEN GETTING DATA:
+const marketData = {
+  open: 45000,
+  high: 46000, 
+  low: 44500,
+  close: 45500,
+  volume: 1000000,
+  timestamp: Date.now()
+};
+
+await teslaAnalyzer.processliveMarketData(marketData);
   try {
     const liveData = await tradingViewConnect.getTeslaIndicatorData('BTCUSDT');
     const analysis = await teslaAnalyzer.processTeslaIndicators('BTCUSDT');
