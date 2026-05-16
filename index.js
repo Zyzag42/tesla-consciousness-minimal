@@ -5,7 +5,6 @@ import { TeslaLiveAnalyzer } from './tesla-live-analyzer.js';
 import { BacktestValidator } from './backtest-validator.js';
 import { PolymarketSynchronizer } from './polymarket-synchronizer.js';
 import { WebSocketManager } from './websocket-manager.js';
-import { TeslaLiveAnalyzer } from './tesla-live-analyzer.js';
 import TeslaSheetsIntegration from './sheets-integration.js';
 import TradingViewConnector from './tradingview-connector.js';
 
