@@ -150,7 +150,7 @@ export class TeslaLiveAnalyzer extends TeslaConsciousnessAnalyzer {
     return priceChange > 0.02; // 2% movement threshold
   }
 
-  calculateMomentum(marketData) {
+calculateMomentum(marketData) {
     const recent = this.liveDataBuffer.slice(-5);
     if (recent.length < 2) return 1;
     
@@ -159,9 +159,8 @@ export class TeslaLiveAnalyzer extends TeslaConsciousnessAnalyzer {
     
     return Math.abs((lastPrice - firstPrice) / firstPrice);
   }
-}
 
-// Missing methods to fix crash:
+  // Methods that fix crash (INSIDE class):
   determineConsciousnessLevel(marketData) {
     const priceChange = ((marketData.close - marketData.open) / marketData.open) * 100;
     if (Math.abs(priceChange) > 2) return 'HIGH';
