@@ -159,9 +159,7 @@ export class TeslaLiveAnalyzer extends TeslaConsciousnessAnalyzer {
     
     return Math.abs((lastPrice - firstPrice) / firstPrice);
   }
-}
 
-// Missing methods to fix crash:
   determineConsciousnessLevel(marketData) {
     const priceChange = ((marketData.close - marketData.open) / marketData.open) * 100;
     if (Math.abs(priceChange) > 2) return 'HIGH';
