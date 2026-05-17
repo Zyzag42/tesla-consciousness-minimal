@@ -69,7 +69,8 @@ async function runEnhancedTeslaAutomation() {
   const teslaAnalyzer = new TeslaLiveAnalyzer();
   const googleSheets = new TeslaSheetsIntegration();
   const tradingViewConnect = new TradingViewConnector();
-
+  // Initialize live analysis
+  await teslaAnalyzer.initializeLiveAnalysis();
   let existingResults;
   
 // AFTER INSTANTIATION, ADD:
@@ -85,10 +86,13 @@ const marketData = {
   timestamp: Date.now()
 };
 
-await teslaAnalyzer.processliveMarketData(marketData);
-  try {
+try {
+    // Get live data and feed to analyzer
     const liveData = await tradingViewConnect.getTeslaIndicatorData('BTCUSDT');
-    const analysis = await teslaAnalyzer.processTeslaIndicators('BTCUSDT');
+    await teslaAnalyzer.processliveMarketData(liveData);
+    
+    // Get live Tesla analysis
+    const analysis = await teslaAnalyzer.performLiveAnalysis();
     
     try {
       const sheetsUpdate = await googleSheets.initialize();
