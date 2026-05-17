@@ -161,4 +161,28 @@ export class TeslaLiveAnalyzer extends TeslaConsciousnessAnalyzer {
   }
 }
 
+// Missing methods to fix crash:
+  determineConsciousnessLevel(marketData) {
+    const priceChange = ((marketData.close - marketData.open) / marketData.open) * 100;
+    if (Math.abs(priceChange) > 2) return 'HIGH';
+    if (Math.abs(priceChange) > 1) return 'MEDIUM';
+    return 'LOW';
+  }
+
+  assessTeslaIntelligence(marketData) {
+    const strength = this.calculateElectromagneticStrength(marketData);
+    return strength > 30;
+  }
+
+  analyzeInstitutionalFlow(marketData) {
+    const priceChange = ((marketData.close - marketData.open) / marketData.open) * 100;
+    return {
+      rsi: 50 + (priceChange * 5),
+      ema: priceChange > 0 ? 'BULLISH' : 'BEARISH',
+      macd: 'NEUTRAL',
+      atr: Math.abs(priceChange)
+    };
+  }
+}
+
 export default TeslaLiveAnalyzer;
