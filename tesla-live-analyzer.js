@@ -37,7 +37,7 @@ export class TeslaLiveAnalyzer extends TeslaConsciousnessAnalyzer {
       console.log("⚡ Significant market movement detected - triggering Tesla consciousness analysis!");
       await this.performLiveAnalysis();
     }
-  
+   }
 
   async performLiveAnalysis() {
     if (this.liveDataBuffer.length === 0) {
