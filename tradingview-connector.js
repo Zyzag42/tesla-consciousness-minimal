@@ -140,9 +140,6 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
       source: 'Fallback Simulation'
     };
   }
-    console.log("⚡ Tesla consciousness indicator data retrieved!");
-    return teslaIndicators;
-  }
 
   // NEW: Enable live data stream
   async enableLiveDataStream(symbol = 'BTCUSDT') {
