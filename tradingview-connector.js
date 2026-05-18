@@ -126,12 +126,6 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
       teslaResonance: false
     };
   }
-    
-    if (crossoverAlerts && crossoverAlerts.length > 0) {
-      return Math.random() > 0.7 ? 'BUY' : 'SELL'; // Bias toward signals on real alerts
-    }
-    return Math.random() > 0.5 ? 'BUY' : 'SELL';
-  }
 
   // Parse consciousness wave from countdown alerts  
   parseConsciousnessWave(webhookData) {
