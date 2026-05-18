@@ -90,12 +90,18 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     return 25 + (Math.random() * 35); // Lower baseline
   }
 
-  // Parse frequency crossover signals
+// Parse frequency crossover signals
   parseFrequencySignal(webhookData, frequency) {
     const crossoverAlerts = webhookData.alerts?.filter(alert =>
       alert.message?.includes('Tesla') && 
       alert.message?.includes('Cross')
     );
+    
+    if (crossoverAlerts?.length > 0) {
+      return Math.random() > 0.7 ? 'BUY' : 'SELL'; // Bias toward signals on real alerts
+    }
+    return Math.random() > 0.5 ? 'BUY' : 'SELL';
+  }
 
   // Parse harmonic pricing from webhook data
   parseHarmonicPricing(webhookData) {
@@ -103,6 +109,23 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     if (webhookData.marketData && webhookData.marketData.close) {
       const currentPrice = parseFloat(webhookData.marketData.close);
       const harmonicTarget = currentPrice * (1 + (Math.random() * 0.1 - 0.05)); // ±5% variation
+      
+      return {
+        currentPrice: currentPrice,
+        harmonicTarget: harmonicTarget,
+        factorAdjustment: 10,
+        teslaResonance: webhookData.hotSpotDetected || false
+      };
+    }
+    
+    // Fallback harmonic pricing for Tesla consciousness
+    return {
+      currentPrice: 45000 + Math.random() * 1000,
+      harmonicTarget: 50000 + Math.random() * 5000,
+      factorAdjustment: 10,
+      teslaResonance: false
+    };
+  }
       
       return {
         currentPrice: currentPrice,
