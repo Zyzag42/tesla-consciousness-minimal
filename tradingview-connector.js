@@ -126,14 +126,6 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
       teslaResonance: false
     };
   }
-      
-      return {
-        currentPrice: currentPrice,
-        harmonicTarget: harmonicTarget,
-        factorAdjustment: 10,
-        teslaResonance: webhookData.hotSpotDetected || false
-      };
-    }
     
     // Fallback harmonic pricing for Tesla consciousness
     return {
