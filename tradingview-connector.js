@@ -79,12 +79,12 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
   // Parse Tesla electromagnetic field strength from webhook alerts
   parseElectromagneticStrength(webhookData) {
     // Look for Tesla Energy Acceleration alerts
-    const accelerationAlerts = webhookData.alerts?.filter(alert => 
-      alert.message?.includes('Tesla Energy Accelerating') ||
-      alert.message?.includes('electromagnetic')
+    const accelerationAlerts = webhookData.alerts && webhookData.alerts.filter(alert => 
+      alert.message && alert.message.includes('Tesla Energy Accelerating') ||
+      alert.message && alert.message.includes('electromagnetic')
     );
     
-    if (accelerationAlerts?.length > 0) {
+    if (accelerationAlerts && accelerationAlerts.length > 0) {
       return 75 + (Math.random() * 25); // High strength for real alerts
     }
     return 25 + (Math.random() * 35); // Lower baseline
@@ -92,12 +92,12 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
 
 // Parse frequency crossover signals
   parseFrequencySignal(webhookData, frequency) {
-    const crossoverAlerts = webhookData.alerts?.filter(alert =>
-      alert.message?.includes('Tesla') && 
-      alert.message?.includes('Cross')
+    const crossoverAlerts = webhookData.alerts && webhookData.alerts.filter(alert =>
+      alert.message && alert.message.includes('Tesla') && 
+      alert.message && alert.message.includes('Cross')
     );
     
-    if (crossoverAlerts?.length > 0) {
+    if (crossoverAlerts && crossoverAlerts.length > 0) {
       return Math.random() > 0.7 ? 'BUY' : 'SELL'; // Bias toward signals on real alerts
     }
     return Math.random() > 0.5 ? 'BUY' : 'SELL';
@@ -127,7 +127,7 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     };
   }
     
-    if (crossoverAlerts?.length > 0) {
+    if (crossoverAlerts && crossoverAlerts.length > 0) {
       return Math.random() > 0.7 ? 'BUY' : 'SELL'; // Bias toward signals on real alerts
     }
     return Math.random() > 0.5 ? 'BUY' : 'SELL';
@@ -135,9 +135,9 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
 
   // Parse consciousness wave from countdown alerts  
   parseConsciousnessWave(webhookData) {
-    const countdownAlerts = webhookData.alerts?.filter(alert =>
-      alert.message?.includes('30 Sec Countdown') ||
-      alert.message?.includes('consciousness')
+    const countdownAlerts = webhookData.alerts && webhookData.alerts.filter(alert =>
+      alert.message && alert.message.includes('30 Sec Countdown') ||
+      alert.message && alert.message.includes('consciousness')
     );
     
     return countdownAlerts?.length > 0 ? 65 + (Math.random() * 35) : 30 + (Math.random() * 40);
@@ -145,9 +145,9 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
 
   // Parse Hot Spot convergence detection
   parseHotSpotConvergence(webhookData) {
-    const hotSpotAlerts = webhookData.alerts?.filter(alert =>
-      alert.message?.includes('Hot Spot') ||
-      alert.message?.includes('convergence')
+    const hotSpotAlerts = webhookData.alerts && webhookData.alerts.filter(alert =>
+      alert.message && alert.message.includes('Hot Spot') ||
+      alert.message && alert.message.includes('convergence')
     );
     
     return hotSpotAlerts?.length > 0;
