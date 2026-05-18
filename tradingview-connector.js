@@ -174,6 +174,32 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     
     return accelerationAlerts && accelerationAlerts.length > 0;
   }
+  
+  // Parse harmonic inversion detection
+  parseHarmonicInversion(webhookData) {
+    const harmonicAlerts = webhookData.alerts && webhookData.alerts.filter(alert =>
+      (alert.message && alert.message.includes('E/F 120')) ||
+      (alert.message && alert.message.includes('D#/Eb 90')) ||
+      (alert.message && alert.message.includes('harmonic'))
+    );
+  
+    if (harmonicAlerts && harmonicAlerts.length > 0) {
+      // Detect harmonic type
+      const bullishHarmonic = harmonicAlerts.some(alert => 
+        alert.message && alert.message.includes('E/F 120'));
+      const bearishHarmonic = harmonicAlerts.some(alert => 
+        alert.message && alert.message.includes('D#/Eb 90'));
+      
+      return {
+        detected: true,
+        type: bullishHarmonic ? 'bullish_expansion' : 'bearish_contraction',
+        frequency: bullishHarmonic ? 'E/F_120' : 'D#/Eb_90',
+        resonance: bullishHarmonic ? 'expanding' : 'contracting'
+      };
+    }
+  
+  return { detected: false, type: 'none' };
+}
   // NEW: Enable live data stream
   async enableLiveDataStream(symbol = 'BTCUSDT') {
     console.log("🚀 Enabling live TradingView data stream...");
