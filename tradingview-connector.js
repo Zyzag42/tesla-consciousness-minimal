@@ -134,7 +134,7 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
       alert.message && alert.message.includes('consciousness')
     );
     
-    return countdownAlerts?.length > 0 ? 65 + (Math.random() * 35) : 30 + (Math.random() * 40);
+    return (countdownAlerts && countdownAlerts.length > 0) ? 65 + (Math.random() * 35) : 30 + (Math.random() * 40);
   }
 
   // Parse Hot Spot convergence detection
@@ -144,7 +144,7 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
       alert.message && alert.message.includes('convergence')
     );
     
-    return hotSpotAlerts?.length > 0;
+    return hotSpotAlerts && hotSpotAlerts.length > 0;
   }
 
   // Fallback data when webhook unavailable
@@ -165,6 +165,15 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     };
   }
 
+  // Parse Tesla acceleration from webhook alerts
+  parseTeslaAcceleration(webhookData) {
+    const accelerationAlerts = webhookData.alerts && webhookData.alerts.filter(alert =>
+      alert.message && alert.message.includes('Tesla Energy Accelerating') ||
+      alert.message && alert.message.includes('acceleration')
+    );
+    
+    return accelerationAlerts && accelerationAlerts.length > 0;
+  }
   // NEW: Enable live data stream
   async enableLiveDataStream(symbol = 'BTCUSDT') {
     console.log("🚀 Enabling live TradingView data stream...");
