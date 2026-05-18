@@ -127,15 +127,6 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     };
   }
     
-    // Fallback harmonic pricing for Tesla consciousness
-    return {
-      currentPrice: 45000 + Math.random() * 1000,
-      harmonicTarget: 50000 + Math.random() * 5000,
-      factorAdjustment: 10,
-      teslaResonance: false
-    };
-  }  
-    
     if (crossoverAlerts?.length > 0) {
       return Math.random() > 0.7 ? 'BUY' : 'SELL'; // Bias toward signals on real alerts
     }
