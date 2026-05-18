@@ -39,7 +39,7 @@ async getTeslaIndicatorData(symbol = 'BTCUSDT') {
     
     try {
       // Connect to your ngrok webhook for real Tesla alerts
-      const webhookResponse = await fetch('https://vivien-girdlelike-unreligiously.ngrok-free.app/tesla-webhook', {
+      const webhookResponse = await fetch('https://vivien-girdlelike-unreligiously.ngrok-free.dev/tesla-webhook', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
