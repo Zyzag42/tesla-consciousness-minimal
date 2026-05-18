@@ -18,6 +18,16 @@ let latestTeslaAlerts = {
   frequency37Hz: 'NEUTRAL',
   frequency69Hz: 'NEUTRAL',
   frequency94Hz: 'NEUTRAL'
+  // ADD MARKET DATA:
+  marketData: {
+    open: 45000 + Math.random() * 1000,
+    high: 46000 + Math.random() * 1000,
+    low: 44000 + Math.random() * 1000,
+    close: 45500 + Math.random() * 1000,
+    volume: 1000000 + Math.random() * 500000,
+    symbol: 'BTCUSDT',
+    timestamp: Date.now()
+  }
 };
 
 // Webhook endpoint to receive TradingView alerts
