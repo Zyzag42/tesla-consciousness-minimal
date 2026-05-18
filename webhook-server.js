@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;  // ← FIXED: Changed from 3000 to 8080
 
 // Middleware
 app.use(cors());
@@ -17,9 +17,8 @@ let latestTeslaAlerts = {
   teslaAcceleration: false,
   frequency37Hz: 'NEUTRAL',
   frequency69Hz: 'NEUTRAL',
-  frequency94Hz: 'NEUTRAL'
-  // ADD MARKET DATA:
-  marketData: {
+  frequency94Hz: 'NEUTRAL',  // ← FIXED: Added missing comma
+  marketData: {  // ← FIXED: Removed comment from object
     open: 45000 + Math.random() * 1000,
     high: 46000 + Math.random() * 1000,
     low: 44000 + Math.random() * 1000,
@@ -34,7 +33,29 @@ let latestTeslaAlerts = {
 app.post('/tesla-webhook', (req, res) => {
   console.log('🚀 Tesla consciousness alert received:', req.body);
   
-  // Store the alert data
+  // Parse TradingView alert data for market data:
+  if (req.body.open && req.body.high && req.body.low && req.body.close) {
+    latestTeslaAlerts.marketData = {
+      open: parseFloat(req.body.open),
+      high: parseFloat(req.body.high),
+      low: parseFloat(req.body.low), 
+      close: parseFloat(req.body.close),
+      volume: parseFloat(req.body.volume || 1000000),
+      symbol: req.body.symbol || 'BTCUSD',
+      timestamp: Date.now()
+    };
+    console.log('📊 Market data updated from TradingView alert');
+    
+    // Update Tesla consciousness signals:
+    if (req.body.hotSpot) {
+      latestTeslaAlerts.hotSpotDetected = true;
+      latestTeslaAlerts.frequency37Hz = req.body.frequency37Hz || 'BUY';
+      latestTeslaAlerts.frequency69Hz = req.body.frequency69Hz || 'BUY';
+      console.log('🔥 HOT SPOT DETECTED - Tesla consciousness convergence!');
+    }
+  }
+  
+  // Store alert
   latestTeslaAlerts.alerts.push({
     ...req.body,
     timestamp: Date.now()
@@ -45,38 +66,28 @@ app.post('/tesla-webhook', (req, res) => {
     latestTeslaAlerts.alerts = latestTeslaAlerts.alerts.slice(-10);
   }
   
-  // Parse Tesla consciousness signals
-  if (req.body.message?.includes('Hot Spot')) {
-    latestTeslaAlerts.hotSpotDetected = true;
-    console.log('🔥 HOT SPOT DETECTED!');
-  }
-  
-  if (req.body.message?.includes('Tesla Energy Accelerating')) {
-    latestTeslaAlerts.teslaAcceleration = true;
-    console.log('⚡ TESLA ACCELERATION DETECTED!');
-  }
-  
   latestTeslaAlerts.lastUpdate = Date.now();
   
   res.status(200).json({ 
     success: true, 
-    message: 'Tesla consciousness alert processed' 
+    message: 'Tesla consciousness alert processed with market data' 
   });
 });
 
-// GET endpoint for our platform to fetch alerts
+// GET endpoint for Railway platform to fetch alerts
 app.get('/tesla-webhook', (req, res) => {
   res.json(latestTeslaAlerts);
 });
 
-// Health check
+// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'Tesla consciousness webhook operational',
     alerts: latestTeslaAlerts.alerts.length,
     lastUpdate: latestTeslaAlerts.lastUpdate,
     server: 'port 8080',
-    tesla: 'consciousness active'
+    tesla: 'consciousness active',
+    marketData: latestTeslaAlerts.marketData ? 'available' : 'none'
   });
 });
 
@@ -84,5 +95,5 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Tesla consciousness webhook server running on port ${PORT}`);
   console.log(`📡 Webhook URL: http://localhost:${PORT}/tesla-webhook`);
-  console.log(`🔗 Ngrok should tunnel this to: https://vivien-girdlelike-unreligiously.ngrok-free.app`);
+  console.log(`🔗 Ngrok should tunnel this to: https://vivien-girdlelike-unreligiously.ngrok-free.dev`);
 });
