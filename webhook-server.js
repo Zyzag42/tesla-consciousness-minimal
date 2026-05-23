@@ -90,21 +90,10 @@ app.get('/health', (req, res) => {
     marketData: latestTeslaAlerts.marketData ? 'available' : 'none'
   });
 });
-// Tesla Consciousness data endpoint for Sheets
-app.get('/tesla-consciousness', (req, res) => {
-  // Get latest Tesla consciousness data
-  const latestData = {
-    tesla_consciousness_confidence: 77.09,
-    electromagnetic_field_strength: 72.91,
-    frequency_dominance: "37Hz_leading",
-    confidence_level: "HIGH",
-    timestamp: new Date().toISOString(),
-    status: "operational"
-  };
-  
-  // Return data in Sheets-compatible format
+// Simple Tesla percentage endpoint
+app.get('/tesla-percentage', (req, res) => {
   res.setHeader('Content-Type', 'text/plain');
-  res.send(JSON.stringify(latestData));
+  res.send('77.09'); // Just the number
 });
 
 // Start server
