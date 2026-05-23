@@ -1,20 +1,13 @@
 {
   "name": "tesla-consciousness-minimal",
   "version": "2.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "start": "node webhook-server.js",
+    "dev": "node webhook-server.js"
   },
   "dependencies": {
-    "node-fetch": "^3.3.1",
-    "ws": "^8.14.2",
-    "socket.io-client": "^4.7.2",
     "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "google-spreadsheet": "^4.1.2",
-    "google-auth-library": "^9.4.0",
-    "googleapis": "^131.0.0"
+    "cors": "^2.8.5"
   }
 }
