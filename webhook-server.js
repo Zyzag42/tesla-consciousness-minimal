@@ -90,6 +90,11 @@ app.get('/health', (req, res) => {
     marketData: latestTeslaAlerts.marketData ? 'available' : 'none'
   });
 });
+// Add to webhook data structure
+tesla_consciousness_confidence: 77.09,
+electromagnetic_field_strength: 72.91,
+frequency_dominance: "37Hz_leading",
+confidence_level: "HIGH"
 
 // Start server
 app.listen(PORT, () => {
