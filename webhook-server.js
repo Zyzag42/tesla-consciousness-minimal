@@ -96,6 +96,30 @@ app.get('/tesla-percentage', (req, res) => {
   res.send('77.09'); // Just the number
 });
 
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8080;
+
+// ADD CORS HEADERS FOR GOOGLE SHEETS ACCESS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// Your existing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Simple Tesla percentage endpoint
+app.get('/tesla-percentage', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Extra CORS for this endpoint
+  res.send('77.09'); // Just the number
+});
+
+// Rest of your existing endpoints...
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Tesla consciousness webhook server running on port ${PORT}`);
