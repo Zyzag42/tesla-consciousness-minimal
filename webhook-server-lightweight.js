@@ -69,58 +69,92 @@ app.get('/tesla-percentage', (req, res) => {
 });
 // Add this to webhook-server-lightweight.js (already included in my previous code)
 
-// Enhanced webhook endpoint with crash protection
-app.post('/tesla-webhook', (req, res) => {
-  try {
-    console.log('⚡ TRADE TYPE 1 - Tesla electromagnetic prediction received');
-    
-    // CRASH-PROOF DATA EXTRACTION
-    const safeBody = req.body || {};
-    
-    // Extract data with fallbacks
-    const prediction = {
-      timestamp: Date.now(),
-      symbol: safeBody.symbol || 'BTCUSDT',
-      currentPrice: parseFloat(safeBody.close) || 77000,
+app.get('/backtesting-results', (req, res) => {
+  const results = {
+    tradeType: "TRADE TYPE 1 - Time/Price Predictions",
+    totalPredictions: tradeType1Data.backtesting.totalPredictions,
+    accuracy: calculateAccuracy(),
+    recentPredictions: tradeType1Data.predictions.slice(-10).map(pred => ({
+      // Original data
+      timestamp: pred.timestamp,
       
-      // SAFE PARSING WITH DEFAULTS
-      timePrediction: safeBody.timePrediction || "1.3d",
-      pricePrediction: parseFloat(safeBody.pricePrediction) || parseFloat(safeBody.close) || 77000,
-      electromagneticStrength: parseFloat(safeBody.electromagnetic) || 77.09,
-      frequency37Hz: safeBody.frequency37Hz || 'NEUTRAL',
-      frequency69Hz: safeBody.frequency69Hz || 'NEUTRAL',
-      frequency94Hz: safeBody.frequency94Hz || 'NEUTRAL',
+      // HUMAN-READABLE TIME FORMATTING
+      alertTime: formatTimestamp(pred.timestamp),
+      utcTime: new Date(pred.timestamp).toISOString(),
+      localTime: new Date(pred.timestamp).toLocaleString('en-GB', {timeZone: 'UTC'}),
       
-      // For backtesting validation
-      outcome: null,
-      accuracy: null
-    };
-    
-    // Store prediction safely
-    tradeType1Data.predictions.push(prediction);
-    tradeType1Data.backtesting.totalPredictions++;
-    
-    // Keep last 100 predictions
-    if (tradeType1Data.predictions.length > 100) {
-      tradeType1Data.predictions = tradeType1Data.predictions.slice(-100);
-    }
-    
-    console.log(`📊 TRADE TYPE 1 Prediction stored safely: ${prediction.timePrediction} target: $${prediction.pricePrediction}`);
-    
-    res.status(200).json({ success: true, message: 'Trade Type 1 prediction logged safely' });
-    
-  } catch (error) {
-    // CRASH PROTECTION
-    console.error('❌ TRADE TYPE 1 Error (but continuing):', error.message);
-    
-    // Return success even on error to prevent TradingView retry spam
-    res.status(200).json({ 
-      success: false, 
-      message: 'Error handled gracefully', 
-      error: error.message 
-    });
-  }
+      // Enhanced prediction data
+      symbol: pred.symbol,
+      currentPrice: `$${pred.currentPrice.toFixed(2)}`,
+      timePrediction: pred.timePrediction,
+      pricePrediction: `$${pred.pricePrediction.toFixed(2)}`,
+      
+      // TARGET PREDICTION TIME
+      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000), // +1.3 days
+      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
+      
+      electromagneticStrength: `${pred.electromagneticStrength}%`,
+      frequency37Hz: pred.frequency37Hz,
+      frequency69Hz: pred.frequency69Hz,
+      frequency94Hz: pred.frequency94Hz,
+      
+      // BULLISH WEIGHT CALCULATION
+      bullishSignals: calculateBullishWeight(pred),
+      marketBias: determineMarketBias(pred),
+      
+      outcome: pred.outcome,
+      accuracy: pred.accuracy
+    })),
+    performance: calculatePerformance(),
+    summary: generateEnhancedSummary()
+  };
+  
+  res.json(results);
 });
+
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  return {
+    date: date.toDateString(),
+    time: date.toTimeString().split(' ')[0], // HH:MM:SS
+    utc: date.toISOString(),
+    readable: date.toLocaleString('en-GB', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+  };
+}
+
+function calculateBullishWeight(prediction) {
+  const signals = [prediction.frequency37Hz, prediction.frequency69Hz, prediction.frequency94Hz];
+  const buyCount = signals.filter(s => s === 'BUY').length;
+  const sellCount = signals.filter(s => s === 'SELL').length;
+  
+  return {
+    buySignals: buyCount,
+    sellSignals: sellCount,
+    totalSignals: signals.length,
+    bullishWeight: `${((buyCount / signals.length) * 100).toFixed(1)}%`,
+    bias: buyCount > sellCount ? 'BULLISH' : buyCount < sellCount ? 'BEARISH' : 'NEUTRAL'
+  };
+}
+
+function determineMarketBias(prediction) {
+  const bullishWeight = calculateBullishWeight(prediction);
+  const electromagneticStrength = prediction.electromagneticStrength;
+  
+  return {
+    frequencyBias: bullishWeight.bias,
+    electromagneticConfidence: `${electromagneticStrength}%`,
+    overallBias: bullishWeight.buySignals >= 2 ? 'BULLISH MOMENTUM' : 'BEARISH MOMENTUM',
+    confidence: electromagneticStrength > 75 ? 'HIGH' : electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
+  };
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
