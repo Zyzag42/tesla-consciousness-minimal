@@ -67,6 +67,65 @@ app.get('/tesla-percentage', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send(electromagnetic.toString());
 });
+// Add this to webhook-server-lightweight.js (already included in my previous code)
+
+// Backtesting analysis endpoint - TRADE TYPE 1 ONLY
+app.get('/backtesting-results', (req, res) => {
+  const results = {
+    tradeType: "TRADE TYPE 1 - Time/Price Predictions",
+    totalPredictions: tradeType1Data.backtesting.totalPredictions,
+    accuracy: calculateAccuracy(),
+    recentPredictions: tradeType1Data.predictions.slice(-10),
+    performance: calculatePerformance(),
+    summary: generateSummary()
+  };
+  
+  res.json(results);
+});
+
+function calculateAccuracy() {
+  const predictions = tradeType1Data.predictions;
+  if (predictions.length === 0) return 0;
+  
+  const correctPredictions = predictions.filter(p => p.outcome === 'correct').length;
+  return ((correctPredictions / predictions.length) * 100).toFixed(2);
+}
+
+function calculatePerformance() {
+  const predictions = tradeType1Data.predictions;
+  const last24h = predictions.filter(p => (Date.now() - p.timestamp) < 86400000);
+  
+  return {
+    total: predictions.length,
+    last24Hours: last24h.length,
+    averageElectromagnetic: calculateAverageElectromagnetic(predictions),
+    frequencyDistribution: calculateFrequencyDistribution(predictions)
+  };
+}
+
+function calculateAverageElectromagnetic(predictions) {
+  if (predictions.length === 0) return 0;
+  const sum = predictions.reduce((acc, p) => acc + p.electromagneticStrength, 0);
+  return (sum / predictions.length).toFixed(2);
+}
+
+function calculateFrequencyDistribution(predictions) {
+  const dist = { BUY: 0, SELL: 0, NEUTRAL: 0 };
+  predictions.forEach(p => {
+    [p.frequency37Hz, p.frequency69Hz, p.frequency94Hz].forEach(freq => {
+      if (dist[freq] !== undefined) dist[freq]++;
+    });
+  });
+  return dist;
+}
+
+function generateSummary() {
+  return {
+    status: "TRADE TYPE 1 Lightweight Backtesting Active",
+    dataFocus: "Time/Price Predictions Only",
+    processingLoad: "Minimal - F1 Optimized"
+  };
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
