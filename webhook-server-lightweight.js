@@ -155,7 +155,62 @@ function determineMarketBias(prediction) {
     confidence: electromagneticStrength > 75 ? 'HIGH' : electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
   };
 }
+// Add these missing helper functions at the end of file (before app.listen)
 
+function calculateAccuracy() {
+  const predictions = tradeType1Data.predictions;
+  if (predictions.length === 0) return "0.00";
+  
+  const correctPredictions = predictions.filter(p => p.outcome === 'correct').length;
+  return ((correctPredictions / predictions.length) * 100).toFixed(2);
+}
+
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleString('en-GB', {
+    timeZone: 'UTC',
+    day: '2-digit',
+    month: '2-digit', 
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+function calculateBullishWeight(prediction) {
+  const signals = [prediction.frequency37Hz, prediction.frequency69Hz, prediction.frequency94Hz];
+  const buyCount = signals.filter(s => s === 'BUY').length;
+  const sellCount = signals.filter(s => s === 'SELL').length;
+  
+  return {
+    buySignals: buyCount,
+    sellSignals: sellCount,
+    bullishWeight: `${((buyCount / signals.length) * 100).toFixed(1)}%`,
+    bias: buyCount > sellCount ? 'BULLISH' : buyCount < sellCount ? 'BEARISH' : 'NEUTRAL'
+  };
+}
+
+function calculateAverageElectromagnetic() {
+  const predictions = tradeType1Data.predictions;
+  if (predictions.length === 0) return "0.00";
+  
+  const sum = predictions.reduce((acc, p) => acc + p.electromagneticStrength, 0);
+  return (sum / predictions.length).toFixed(2);
+}
+
+function calculateFrequencyDistribution() {
+  const predictions = tradeType1Data.predictions;
+  const dist = { BUY: 0, SELL: 0, NEUTRAL: 0 };
+  
+  predictions.forEach(p => {
+    [p.frequency37Hz, p.frequency69Hz, p.frequency94Hz].forEach(freq => {
+      if (dist[freq] !== undefined) dist[freq]++;
+    });
+  });
+  
+  return dist;
+}
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
