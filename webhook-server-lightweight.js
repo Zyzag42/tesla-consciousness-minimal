@@ -69,61 +69,91 @@ app.get('/tesla-percentage', (req, res) => {
 });
 // Add this to webhook-server-lightweight.js (already included in my previous code)
 
-// Backtesting analysis endpoint - TRADE TYPE 1 ONLY
+// Enhanced backtesting results endpoint
 app.get('/backtesting-results', (req, res) => {
   const results = {
     tradeType: "TRADE TYPE 1 - Time/Price Predictions",
     totalPredictions: tradeType1Data.backtesting.totalPredictions,
     accuracy: calculateAccuracy(),
-    recentPredictions: tradeType1Data.predictions.slice(-10),
+    recentPredictions: tradeType1Data.predictions.slice(-10).map(pred => ({
+      // Original data
+      timestamp: pred.timestamp,
+      
+      // HUMAN-READABLE TIME FORMATTING
+      alertTime: formatTimestamp(pred.timestamp),
+      utcTime: new Date(pred.timestamp).toISOString(),
+      localTime: new Date(pred.timestamp).toLocaleString('en-GB', {timeZone: 'UTC'}),
+      
+      // Enhanced prediction data
+      symbol: pred.symbol,
+      currentPrice: `$${pred.currentPrice.toFixed(2)}`,
+      timePrediction: pred.timePrediction,
+      pricePrediction: `$${pred.pricePrediction.toFixed(2)}`,
+      
+      // TARGET PREDICTION TIME
+      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000), // +1.3 days
+      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
+      
+      electromagneticStrength: `${pred.electromagneticStrength}%`,
+      frequency37Hz: pred.frequency37Hz,
+      frequency69Hz: pred.frequency69Hz,
+      frequency94Hz: pred.frequency94Hz,
+      
+      // BULLISH WEIGHT CALCULATION
+      bullishSignals: calculateBullishWeight(pred),
+      marketBias: determineMarketBias(pred),
+      
+      outcome: pred.outcome,
+      accuracy: pred.accuracy
+    })),
     performance: calculatePerformance(),
-    summary: generateSummary()
+    summary: generateEnhancedSummary()
   };
   
   res.json(results);
 });
 
-function calculateAccuracy() {
-  const predictions = tradeType1Data.predictions;
-  if (predictions.length === 0) return 0;
-  
-  const correctPredictions = predictions.filter(p => p.outcome === 'correct').length;
-  return ((correctPredictions / predictions.length) * 100).toFixed(2);
-}
-
-function calculatePerformance() {
-  const predictions = tradeType1Data.predictions;
-  const last24h = predictions.filter(p => (Date.now() - p.timestamp) < 86400000);
-  
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
   return {
-    total: predictions.length,
-    last24Hours: last24h.length,
-    averageElectromagnetic: calculateAverageElectromagnetic(predictions),
-    frequencyDistribution: calculateFrequencyDistribution(predictions)
+    date: date.toDateString(),
+    time: date.toTimeString().split(' ')[0], // HH:MM:SS
+    utc: date.toISOString(),
+    readable: date.toLocaleString('en-GB', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
   };
 }
 
-function calculateAverageElectromagnetic(predictions) {
-  if (predictions.length === 0) return 0;
-  const sum = predictions.reduce((acc, p) => acc + p.electromagneticStrength, 0);
-  return (sum / predictions.length).toFixed(2);
-}
-
-function calculateFrequencyDistribution(predictions) {
-  const dist = { BUY: 0, SELL: 0, NEUTRAL: 0 };
-  predictions.forEach(p => {
-    [p.frequency37Hz, p.frequency69Hz, p.frequency94Hz].forEach(freq => {
-      if (dist[freq] !== undefined) dist[freq]++;
-    });
-  });
-  return dist;
-}
-
-function generateSummary() {
+function calculateBullishWeight(prediction) {
+  const signals = [prediction.frequency37Hz, prediction.frequency69Hz, prediction.frequency94Hz];
+  const buyCount = signals.filter(s => s === 'BUY').length;
+  const sellCount = signals.filter(s => s === 'SELL').length;
+  
   return {
-    status: "TRADE TYPE 1 Lightweight Backtesting Active",
-    dataFocus: "Time/Price Predictions Only",
-    processingLoad: "Minimal - F1 Optimized"
+    buySignals: buyCount,
+    sellSignals: sellCount,
+    totalSignals: signals.length,
+    bullishWeight: `${((buyCount / signals.length) * 100).toFixed(1)}%`,
+    bias: buyCount > sellCount ? 'BULLISH' : buyCount < sellCount ? 'BEARISH' : 'NEUTRAL'
+  };
+}
+
+function determineMarketBias(prediction) {
+  const bullishWeight = calculateBullishWeight(prediction);
+  const electromagneticStrength = prediction.electromagneticStrength;
+  
+  return {
+    frequencyBias: bullishWeight.bias,
+    electromagneticConfidence: `${electromagneticStrength}%`,
+    overallBias: bullishWeight.buySignals >= 2 ? 'BULLISH MOMENTUM' : 'BEARISH MOMENTUM',
+    confidence: electromagneticStrength > 75 ? 'HIGH' : electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
   };
 }
 
