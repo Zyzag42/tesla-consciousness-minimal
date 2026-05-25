@@ -70,93 +70,40 @@ app.get('/tesla-percentage', (req, res) => {
 // Add this to webhook-server-lightweight.js (already included in my previous code)
 
 app.get('/backtesting-results', (req, res) => {
-  const results = {
-    tradeType: "TRADE TYPE 1 - Time/Price Predictions",
-    totalPredictions: tradeType1Data.backtesting.totalPredictions,
-    accuracy: calculateAccuracy(),
-    recentPredictions: tradeType1Data.predictions.slice(-10).map(pred => ({
-      // Original data
-      timestamp: pred.timestamp,
-      
-      // HUMAN-READABLE TIME FORMATTING
-      alertTime: formatTimestamp(pred.timestamp),
-      utcTime: new Date(pred.timestamp).toISOString(),
-      localTime: new Date(pred.timestamp).toLocaleString('en-GB', {timeZone: 'UTC'}),
-      
-      // Enhanced prediction data
-      symbol: pred.symbol,
-      currentPrice: `$${pred.currentPrice.toFixed(2)}`,
-      timePrediction: pred.timePrediction,
-      pricePrediction: `$${pred.pricePrediction.toFixed(2)}`,
-      
-      // TARGET PREDICTION TIME
-      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000), // +1.3 days
-      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
-      
-      electromagneticStrength: `${pred.electromagneticStrength}%`,
-      frequency37Hz: pred.frequency37Hz,
-      frequency69Hz: pred.frequency69Hz,
-      frequency94Hz: pred.frequency94Hz,
-      
-      // BULLISH WEIGHT CALCULATION
-      bullishSignals: calculateBullishWeight(pred),
-      marketBias: determineMarketBias(pred),
-      
-      outcome: pred.outcome,
-      accuracy: pred.accuracy
-    })),
-    performance: calculatePerformance(),
-    summary: generateEnhancedSummary()
-  };
-  
-  res.json(results);
+  try {
+    const results = {
+      tradeType: "TRADE TYPE 1 - Time/Price Predictions",
+      totalPredictions: tradeType1Data.backtesting.totalPredictions,
+      accuracy: calculateAccuracy(),
+      recentPredictions: tradeType1Data.predictions.slice(-10).map(pred => ({
+        timestamp: pred.timestamp,
+        alertTime: formatTimestamp(pred.timestamp),
+        symbol: pred.symbol,
+        currentPrice: `$${pred.currentPrice.toFixed(2)}`,
+        timePrediction: pred.timePrediction,
+        pricePrediction: `$${pred.pricePrediction.toFixed(2)}`,
+        targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000),
+        targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
+        electromagneticStrength: `${pred.electromagneticStrength}%`,
+        frequency37Hz: pred.frequency37Hz,
+        frequency69Hz: pred.frequency69Hz,
+        frequency94Hz: pred.frequency94Hz,
+        bullishSignals: calculateBullishWeight(pred),
+        outcome: pred.outcome,
+        accuracy: pred.accuracy
+      })),
+      performance: calculatePerformance(),
+      summary: generateEnhancedSummary()
+    };
+    
+    res.json(results);
+  } catch (error) {
+    console.error('❌ Backtesting results error:', error.message);
+    res.status(500).json({ error: "Backtesting error", message: error.message });
+  }
 });
 
-function formatTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  return {
-    date: date.toDateString(),
-    time: date.toTimeString().split(' ')[0], // HH:MM:SS
-    utc: date.toISOString(),
-    readable: date.toLocaleString('en-GB', {
-      timeZone: 'UTC',
-      day: '2-digit',
-      month: '2-digit', 
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-  };
-}
-
-function calculateBullishWeight(prediction) {
-  const signals = [prediction.frequency37Hz, prediction.frequency69Hz, prediction.frequency94Hz];
-  const buyCount = signals.filter(s => s === 'BUY').length;
-  const sellCount = signals.filter(s => s === 'SELL').length;
-  
-  return {
-    buySignals: buyCount,
-    sellSignals: sellCount,
-    totalSignals: signals.length,
-    bullishWeight: `${((buyCount / signals.length) * 100).toFixed(1)}%`,
-    bias: buyCount > sellCount ? 'BULLISH' : buyCount < sellCount ? 'BEARISH' : 'NEUTRAL'
-  };
-}
-
-function determineMarketBias(prediction) {
-  const bullishWeight = calculateBullishWeight(prediction);
-  const electromagneticStrength = prediction.electromagneticStrength;
-  
-  return {
-    frequencyBias: bullishWeight.bias,
-    electromagneticConfidence: `${electromagneticStrength}%`,
-    overallBias: bullishWeight.buySignals >= 2 ? 'BULLISH MOMENTUM' : 'BEARISH MOMENTUM',
-    confidence: electromagneticStrength > 75 ? 'HIGH' : electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
-  };
-}
-// Add these missing helper functions at the end of file (before app.listen)
-
+// HELPER FUNCTIONS - NO DUPLICATES
 function calculateAccuracy() {
   const predictions = tradeType1Data.predictions;
   if (predictions.length === 0) return "0.00";
@@ -211,6 +158,61 @@ function calculateFrequencyDistribution() {
   
   return dist;
 }
+
+function calculatePerformance() {
+  const predictions = tradeType1Data.predictions;
+  const last24h = predictions.filter(p => (Date.now() - p.timestamp) < 86400000);
+  
+  return {
+    total: predictions.length,
+    last24Hours: last24h.length,
+    averageElectromagnetic: calculateAverageElectromagnetic(),
+    frequencyDistribution: calculateFrequencyDistribution(),
+    latestPrice: predictions.length > 0 ? predictions[predictions.length - 1].currentPrice : 0,
+    priceRange: calculatePriceRange(predictions),
+    predictionTimeRange: calculateTimeRange(predictions)
+  };
+}
+
+function calculatePriceRange(predictions) {
+  if (predictions.length === 0) return { min: 0, max: 0, range: 0 };
+  
+  const prices = predictions.map(p => p.currentPrice);
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  
+  return {
+    min: min.toFixed(2),
+    max: max.toFixed(2),
+    range: (max - min).toFixed(2)
+  };
+}
+
+function calculateTimeRange(predictions) {
+  if (predictions.length === 0) return { first: null, last: null, span: "0 minutes" };
+  
+  const timestamps = predictions.map(p => p.timestamp);
+  const first = Math.min(...timestamps);
+  const last = Math.max(...timestamps);
+  const spanMinutes = Math.round((last - first) / (1000 * 60));
+  
+  return {
+    first: formatTimestamp(first),
+    last: formatTimestamp(last),
+    span: `${spanMinutes} minutes`
+  };
+}
+
+function generateEnhancedSummary() {
+  return {
+    status: "TRADE TYPE 1 Lightweight Backtesting Active",
+    dataFocus: "Time/Price Predictions Only",
+    processingLoad: "Minimal - F1 Optimized",
+    systemHealth: "Operational",
+    lastUpdate: formatTimestamp(Date.now())
+  };
+}
+
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
