@@ -68,7 +68,32 @@ app.get('/health', (req, res) => {
     port: PORT
   });
 });
+// Add to webhook-server.js
+app.get('/backtesting-results', (req, res) => {
+  const results = {
+    totalPredictions: tradeType1Data.backtesting.totalPredictions,
+    accuracy: tradeType1Data.backtesting.accuracy,
+    recentPredictions: tradeType1Data.predictions.slice(-10),
+    performance: calculatePerformance()
+  };
+  
+  res.json(results);
+});
 
+function calculatePerformance() {
+  // Simple accuracy calculation for TRADE TYPE 1
+  let correct = 0;
+  const predictions = tradeType1Data.predictions;
+  
+  predictions.forEach(pred => {
+    if (pred.outcome === 'correct') correct++;
+  });
+  
+  return {
+    accuracy: predictions.length > 0 ? (correct / predictions.length) * 100 : 0,
+    totalSamples: predictions.length
+  };
+}
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Tesla consciousness webhook server running on port ${PORT}`);
