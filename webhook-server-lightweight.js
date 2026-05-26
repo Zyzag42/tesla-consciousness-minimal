@@ -213,6 +213,43 @@ function generateEnhancedSummary() {
   };
 }
 
+// ADD THIS AFTER YOUR EXISTING ENDPOINTS
+// (After /backtesting-results, before helper functions)
+
+app.get('/sheets-predictions', (req, res) => {
+  try {
+    // Format data specifically for Sheets import
+    const sheetsData = tradeType1Data.predictions.map(pred => ({
+      timestamp: pred.timestamp,
+      alertTime: formatTimestamp(pred.timestamp),
+      symbol: pred.symbol,
+      currentPrice: pred.currentPrice,
+      timePrediction: pred.timePrediction,
+      pricePrediction: pred.pricePrediction,
+      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000),
+      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
+      electromagneticStrength: pred.electromagneticStrength,
+      frequency37Hz: pred.frequency37Hz,
+      frequency69Hz: pred.frequency69Hz,
+      frequency94Hz: pred.frequency94Hz,
+      buySignals: calculateBullishWeight(pred).buySignals,
+      sellSignals: calculateBullishWeight(pred).sellSignals,
+      bullishWeight: parseFloat(calculateBullishWeight(pred).bullishWeight.replace('%', '')),
+      marketBias: calculateBullishWeight(pred).bias,
+      outcome: pred.outcome,
+      accuracy: pred.accuracy
+    }));
+    
+    // Set headers for Sheets compatibility
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(sheetsData);
+    
+  } catch (error) {
+    console.error('❌ Sheets predictions error:', error.message);
+    res.status(200).json([]); // Return empty array on error
+  }
+});
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
