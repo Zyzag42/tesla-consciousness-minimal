@@ -250,6 +250,30 @@ app.get('/sheets-predictions', (req, res) => {
     res.status(200).json([]); // Return empty array on error
   }
 });
+
+// Enhanced webhook for direct Sheets population
+app.post('/sheets-webhook', (req, res) => {
+  // Process TV alert
+  const alertData = req.body;
+  
+  // Calculate Tesla Energy variables
+  const teslaData = {
+    timestamp: Date.now(),
+    alertTime: formatTimestamp(Date.now()),
+    ...alertData,
+    
+    // Enhanced Tesla calculations
+    hotSpotStatus: calculateHotSpotFromAlert(alertData),
+    convergence: calculateConvergenceFromAlert(alertData),
+    sacredGeometry: calculateSacredGeometryFromAlert(alertData),
+    fieldResonance: calculateFieldResonanceFromAlert(alertData)
+  };
+  
+  // Store for Sheets access
+  sheetsData.push(teslaData);
+  
+  res.json({success: true});
+});
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
