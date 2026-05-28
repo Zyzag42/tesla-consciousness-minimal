@@ -274,6 +274,25 @@ app.post('/sheets-webhook', (req, res) => {
   
   res.json({success: true});
 });
+
+// Add Tesla Energy calculations to webhook response
+const enhancedTeslaData = {
+  // Existing data...
+  
+  // NEW CALCULATIONS
+  crossType: calculate37_69_94CrossType(),
+  threewaveBias: calculateThreeWaveBias(), 
+  convergenceDivergence: calculateConvergenceDivergence(),
+  angularMomentum: calculateAngularMomentum(),
+  fieldHarmony: calculateFieldHarmony(),
+  fieldCollapse: calculateFieldCollapse(),
+  
+  // BOLLINGER TESLA SQUEEZE
+  tesla37LowerBollinger: calculateTesla37Bollinger(),
+  tesla69SMAEquivalent: calculateTesla69SMA(),
+  tesla94UpperBollinger: calculateTesla94Bollinger(),
+  teslaSqueezeStatus: calculateTeslaSqueeze()
+};
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
