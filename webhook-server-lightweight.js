@@ -268,51 +268,12 @@ app.post('/sheets-webhook', (req, res) => {
     sacredGeometry: calculateSacredGeometryFromAlert(alertData),
     fieldResonance: calculateFieldResonanceFromAlert(alertData)
   };
-
-  // Add these functions to webhook-server-lightweight.js
-function calculate37_69_94CrossType(tesla37, tesla69, tesla94) {
-  if (tesla37 > tesla69 && tesla69 > tesla94) return "ASCENDING";
-  if (tesla37 < tesla69 && tesla69 < tesla94) return "DESCENDING";
-  if (tesla37 > tesla69 && tesla69 < tesla94) return "CONVERGENT";
-  if (tesla37 < tesla69 && tesla69 > tesla94) return "DIVERGENT";
-  return "NEUTRAL";
-}
-
-function calculateAngularMomentum(current, previous) {
-  return ((current.tesla37 - previous.tesla37) + 
-          (current.tesla69 - previous.tesla69) + 
-          (current.tesla94 - previous.tesla94)) / 3;
-}
-
-function calculateFieldCollapse(waveIntensity, solfeggio714) {
-  if (solfeggio714 && waveIntensity < 30) return "COLLAPSE_IMMINENT";
-  if (waveIntensity < 50) return "WEAKENING";
-  return "STABLE";
-}
+  
   // Store for Sheets access
   sheetsData.push(teslaData);
   
   res.json({success: true});
 });
-
-// Add Tesla Energy calculations to webhook response
-const enhancedTeslaData = {
-  // Existing data...
-  
-  // NEW CALCULATIONS
-  crossType: calculate37_69_94CrossType(),
-  threewaveBias: calculateThreeWaveBias(), 
-  convergenceDivergence: calculateConvergenceDivergence(),
-  angularMomentum: calculateAngularMomentum(),
-  fieldHarmony: calculateFieldHarmony(),
-  fieldCollapse: calculateFieldCollapse(),
-  
-  // BOLLINGER TESLA SQUEEZE
-  tesla37LowerBollinger: calculateTesla37Bollinger(),
-  tesla69SMAEquivalent: calculateTesla69SMA(),
-  tesla94UpperBollinger: calculateTesla94Bollinger(),
-  teslaSqueezeStatus: calculateTeslaSqueeze()
-};
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
