@@ -268,7 +268,27 @@ app.post('/sheets-webhook', (req, res) => {
     sacredGeometry: calculateSacredGeometryFromAlert(alertData),
     fieldResonance: calculateFieldResonanceFromAlert(alertData)
   };
-  
+
+  // Add these functions to webhook-server-lightweight.js
+function calculate37_69_94CrossType(tesla37, tesla69, tesla94) {
+  if (tesla37 > tesla69 && tesla69 > tesla94) return "ASCENDING";
+  if (tesla37 < tesla69 && tesla69 < tesla94) return "DESCENDING";
+  if (tesla37 > tesla69 && tesla69 < tesla94) return "CONVERGENT";
+  if (tesla37 < tesla69 && tesla69 > tesla94) return "DIVERGENT";
+  return "NEUTRAL";
+}
+
+function calculateAngularMomentum(current, previous) {
+  return ((current.tesla37 - previous.tesla37) + 
+          (current.tesla69 - previous.tesla69) + 
+          (current.tesla94 - previous.tesla94)) / 3;
+}
+
+function calculateFieldCollapse(waveIntensity, solfeggio714) {
+  if (solfeggio714 && waveIntensity < 30) return "COLLAPSE_IMMINENT";
+  if (waveIntensity < 50) return "WEAKENING";
+  return "STABLE";
+}
   // Store for Sheets access
   sheetsData.push(teslaData);
   
