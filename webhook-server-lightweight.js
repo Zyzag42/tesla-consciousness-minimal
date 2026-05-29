@@ -36,7 +36,7 @@ app.post('/tesla-webhook', (req, res) => {
     frequency94Hz: req.body.frequency94Hz || 'NEUTRAL',
     
     // For backtesting validation
-    outcome: null, // Will be filled later
+    outcome: null,
     accuracy: null
   };
   
@@ -58,37 +58,7 @@ app.get('/trade-type-1-data', (req, res) => {
   res.json(tradeType1Data);
 });
 
-// ADD DEBUG ENDPOINT HERE (same pattern as before)
-app.get('/tesla-debug', (req, res) => {
-  try {
-    const debugInfo = {
-      dataExists: !!tradeType1Data,
-      predictionsExists: !!tradeType1Data.predictions,
-      predictionsLength: tradeType1Data.predictions ? tradeType1Data.predictions.length : 0,
-      predictionsType: typeof tradeType1Data.predictions,
-      sampleData: tradeType1Data.predictions ? tradeType1Data.predictions.slice(0, 1) : [],
-      backTestingExists: !!tradeType1Data.backtesting,
-      backTestingData: tradeType1Data.backtesting || {},
-      rawDataStructure: Object.keys(tradeType1Data || {})
-    };
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(debugInfo);
-    
-  } catch (error) {
-    res.json({
-      error: error.message,
-      debugStatus: "Error accessing tradeType1Data"
-    });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
-});
-
-// Sheets integration (keep working)
+// Sheets integration endpoint
 app.get('/tesla-percentage', (req, res) => {
   const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
   const electromagnetic = latestPrediction ? latestPrediction.electromagneticStrength : 77.09;
@@ -97,8 +67,8 @@ app.get('/tesla-percentage', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send(electromagnetic.toString());
 });
-// Add this to webhook-server-lightweight.js (already included in my previous code)
 
+// Enhanced backtesting results
 app.get('/backtesting-results', (req, res) => {
   try {
     const results = {
@@ -133,7 +103,107 @@ app.get('/backtesting-results', (req, res) => {
   }
 });
 
-// HELPER FUNCTIONS - NO DUPLICATES
+// Sheets predictions endpoint
+app.get('/sheets-predictions', (req, res) => {
+  try {
+    const sheetsData = tradeType1Data.predictions.map(pred => ({
+      timestamp: pred.timestamp,
+      alertTime: formatTimestamp(pred.timestamp),
+      symbol: pred.symbol,
+      currentPrice: pred.currentPrice,
+      timePrediction: pred.timePrediction,
+      pricePrediction: pred.pricePrediction,
+      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000),
+      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
+      electromagneticStrength: pred.electromagneticStrength,
+      frequency37Hz: pred.frequency37Hz,
+      frequency69Hz: pred.frequency69Hz,
+      frequency94Hz: pred.frequency94Hz,
+      buySignals: calculateBullishWeight(pred).buySignals,
+      sellSignals: calculateBullishWeight(pred).sellSignals,
+      bullishWeight: parseFloat(calculateBullishWeight(pred).bullishWeight.replace('%', '')),
+      marketBias: calculateBullishWeight(pred).bias,
+      outcome: pred.outcome,
+      accuracy: pred.accuracy
+    }));
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(sheetsData);
+    
+  } catch (error) {
+    console.error('❌ Sheets predictions error:', error.message);
+    res.status(200).json([]);
+  }
+});
+
+// Test enhanced endpoint
+app.get('/tesla-test-enhanced', (req, res) => {
+  try {
+    const testData = tradeType1Data.predictions.map(pred => ({
+      ...pred,
+      testField1: "TEST_VALUE",
+      testField2: pred.electromagneticStrength > 70 ? "HIGH" : "LOW",
+      testField3: pred.frequency37Hz === pred.frequency94Hz ? "ALIGNED" : "DIVERGENT"
+    }));
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(testData);
+    
+  } catch (error) {
+    console.error('❌ Test enhanced error:', error.message);
+    res.status(200).json([]);
+  }
+});
+
+// Basic enhanced endpoint
+app.get('/tesla-basic-enhanced', (req, res) => {
+  try {
+    const enhancedData = tradeType1Data.predictions.map(pred => ({
+      ...pred,
+      teslaMetrics: calculateBasicTeslaMetrics(pred),
+      priceMovement: ((pred.pricePrediction - pred.currentPrice) / pred.currentPrice * 100).toFixed(2),
+      confidenceLevel: pred.electromagneticStrength > 75 ? 'HIGH' : pred.electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
+    }));
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(enhancedData);
+    
+  } catch (error) {
+    console.error('❌ Basic enhanced error:', error.message);
+    res.status(200).json([]);
+  }
+});
+
+// DEBUG ENDPOINT
+app.get('/tesla-debug', (req, res) => {
+  try {
+    const debugInfo = {
+      dataExists: !!tradeType1Data,
+      predictionsExists: !!tradeType1Data.predictions,
+      predictionsLength: tradeType1Data.predictions ? tradeType1Data.predictions.length : 0,
+      predictionsType: typeof tradeType1Data.predictions,
+      sampleData: tradeType1Data.predictions ? tradeType1Data.predictions.slice(0, 1) : [],
+      backTestingExists: !!tradeType1Data.backtesting,
+      backTestingData: tradeType1Data.backtesting || {},
+      rawDataStructure: Object.keys(tradeType1Data || {})
+    };
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(debugInfo);
+    
+  } catch (error) {
+    res.json({
+      error: error.message,
+      debugStatus: "Error accessing tradeType1Data"
+    });
+  }
+});
+
+// HELPER FUNCTIONS
 function calculateAccuracy() {
   const predictions = tradeType1Data.predictions;
   if (predictions.length === 0) return "0.00";
@@ -158,13 +228,31 @@ function formatTimestamp(timestamp) {
 function calculateBullishWeight(prediction) {
   const signals = [prediction.frequency37Hz, prediction.frequency69Hz, prediction.frequency94Hz];
   const buyCount = signals.filter(s => s === 'BUY').length;
-  const sellCount = signals.filter(s => s === 'SELL').length;
+  const sellSignals = signals.filter(s => s === 'SELL').length;
   
   return {
     buySignals: buyCount,
-    sellSignals: sellCount,
+    sellSignals: sellSignals,
     bullishWeight: `${((buyCount / signals.length) * 100).toFixed(1)}%`,
-    bias: buyCount > sellCount ? 'BULLISH' : buyCount < sellCount ? 'BEARISH' : 'NEUTRAL'
+    bias: buyCount > sellSignals ? 'BULLISH' : buyCount < sellSignals ? 'BEARISH' : 'NEUTRAL'
+  };
+}
+
+function calculateBasicTeslaMetrics(prediction) {
+  const buySignals = [
+    prediction.frequency37Hz === 'BUY' ? 1 : 0,
+    prediction.frequency69Hz === 'BUY' ? 1 : 0, 
+    prediction.frequency94Hz === 'BUY' ? 1 : 0
+  ].reduce((a, b) => a + b, 0);
+  
+  const sellSignals = 3 - buySignals;
+  
+  return {
+    buySignalsCount: buySignals,
+    sellSignalsCount: sellSignals,
+    bullishWeight: ((buySignals / 3) * 100).toFixed(1),
+    marketBias: buySignals >= 2 ? 'BULLISH' : 'BEARISH',
+    teslaStrengthLevel: prediction.electromagneticStrength > 70 ? 'HIGH' : 'MEDIUM'
   };
 }
 
@@ -243,131 +331,7 @@ function generateEnhancedSummary() {
   };
 }
 
-// ADD THIS AFTER YOUR EXISTING ENDPOINTS
-// (After /backtesting-results, before helper functions)
-
-app.get('/sheets-predictions', (req, res) => {
-  try {
-    // Format data specifically for Sheets import
-    const sheetsData = tradeType1Data.predictions.map(pred => ({
-      timestamp: pred.timestamp,
-      alertTime: formatTimestamp(pred.timestamp),
-      symbol: pred.symbol,
-      currentPrice: pred.currentPrice,
-      timePrediction: pred.timePrediction,
-      pricePrediction: pred.pricePrediction,
-      targetTimestamp: pred.timestamp + (1.3 * 24 * 60 * 60 * 1000),
-      targetTime: formatTimestamp(pred.timestamp + (1.3 * 24 * 60 * 60 * 1000)),
-      electromagneticStrength: pred.electromagneticStrength,
-      frequency37Hz: pred.frequency37Hz,
-      frequency69Hz: pred.frequency69Hz,
-      frequency94Hz: pred.frequency94Hz,
-      buySignals: calculateBullishWeight(pred).buySignals,
-      sellSignals: calculateBullishWeight(pred).sellSignals,
-      bullishWeight: parseFloat(calculateBullishWeight(pred).bullishWeight.replace('%', '')),
-      marketBias: calculateBullishWeight(pred).bias,
-      outcome: pred.outcome,
-      accuracy: pred.accuracy
-    }));
-    
-    // Set headers for Sheets compatibility
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(sheetsData);
-    
-  } catch (error) {
-    console.error('❌ Sheets predictions error:', error.message);
-    res.status(200).json([]); // Return empty array on error
-  }
-});
-
-// Enhanced webhook for direct Sheets population
-app.post('/sheets-webhook', (req, res) => {
-  // Process TV alert
-  const alertData = req.body;
-  
-  // Calculate Tesla Energy variables
-  const teslaData = {
-    timestamp: Date.now(),
-    alertTime: formatTimestamp(Date.now()),
-    ...alertData,
-    
-    // Enhanced Tesla calculations
-    hotSpotStatus: calculateHotSpotFromAlert(alertData),
-    convergence: calculateConvergenceFromAlert(alertData),
-    sacredGeometry: calculateSacredGeometryFromAlert(alertData),
-    fieldResonance: calculateFieldResonanceFromAlert(alertData)
-  };
-  
-  // Store for Sheets access
-  sheetsData.push(teslaData);
-  
-  res.json({success: true});
-});
-
-// Test endpoint for enhanced data (SAFE VERSION)
-app.get('/tesla-test-enhanced', (req, res) => {
-  try {
-    // Simple test with existing data
-    const testData = tradeType1Data.predictions.map(pred => ({
-      ...pred,
-      // Add simple calculated fields
-      testField1: "TEST_VALUE",
-      testField2: pred.electromagneticStrength > 70 ? "HIGH" : "LOW",
-      testField3: pred.frequency37Hz === pred.frequency94Hz ? "ALIGNED" : "DIVERGENT"
-    }));
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(testData);
-    
-  } catch (error) {
-    console.error('❌ Test enhanced error:', error.message);
-    res.status(200).json([]);
-  }
-});
-
-// Enhanced calculation functions (SAFE VERSION)
-function calculateBasicTeslaMetrics(prediction) {
-  // Simple safe calculations
-  const buySignals = [
-    prediction.frequency37Hz === 'BUY' ? 1 : 0,
-    prediction.frequency69Hz === 'BUY' ? 1 : 0, 
-    prediction.frequency94Hz === 'BUY' ? 1 : 0
-  ].reduce((a, b) => a + b, 0);
-  
-  const sellSignals = 3 - buySignals;
-  
-  return {
-    buySignalsCount: buySignals,
-    sellSignalsCount: sellSignals,
-    bullishWeight: ((buySignals / 3) * 100).toFixed(1),
-    marketBias: buySignals >= 2 ? 'BULLISH' : 'BEARISH',
-    teslaStrengthLevel: prediction.electromagneticStrength > 70 ? 'HIGH' : 'MEDIUM'
-  };
-}
-
-// Updated test endpoint with basic calculations
-app.get('/tesla-basic-enhanced', (req, res) => {
-  try {
-    const enhancedData = tradeType1Data.predictions.map(pred => ({
-      ...pred,
-      // Add basic Tesla calculations
-      teslaMetrics: calculateBasicTeslaMetrics(pred),
-      // Simple derived fields
-      priceMovement: ((pred.pricePrediction - pred.currentPrice) / pred.currentPrice * 100).toFixed(2),
-      confidenceLevel: pred.electromagneticStrength > 75 ? 'HIGH' : pred.electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
-    }));
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(enhancedData);
-    
-  } catch (error) {
-    console.error('❌ Basic enhanced error:', error.message);
-    res.status(200).json([]);
-  }
-});
+// SINGLE app.listen() - ONLY ONE!
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
