@@ -274,6 +274,28 @@ app.post('/sheets-webhook', (req, res) => {
   
   res.json({success: true});
 });
+
+// Test endpoint for enhanced data (SAFE VERSION)
+app.get('/tesla-test-enhanced', (req, res) => {
+  try {
+    // Simple test with existing data
+    const testData = tradeType1Data.predictions.map(pred => ({
+      ...pred,
+      // Add simple calculated fields
+      testField1: "TEST_VALUE",
+      testField2: pred.electromagneticStrength > 70 ? "HIGH" : "LOW",
+      testField3: pred.frequency37Hz === pred.frequency94Hz ? "ALIGNED" : "DIVERGENT"
+    }));
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(testData);
+    
+  } catch (error) {
+    console.error('❌ Test enhanced error:', error.message);
+    res.status(200).json([]);
+  }
+});
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
