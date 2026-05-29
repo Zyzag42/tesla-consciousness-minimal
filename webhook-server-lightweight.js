@@ -58,6 +58,36 @@ app.get('/trade-type-1-data', (req, res) => {
   res.json(tradeType1Data);
 });
 
+// ADD DEBUG ENDPOINT HERE (same pattern as before)
+app.get('/tesla-debug', (req, res) => {
+  try {
+    const debugInfo = {
+      dataExists: !!tradeType1Data,
+      predictionsExists: !!tradeType1Data.predictions,
+      predictionsLength: tradeType1Data.predictions ? tradeType1Data.predictions.length : 0,
+      predictionsType: typeof tradeType1Data.predictions,
+      sampleData: tradeType1Data.predictions ? tradeType1Data.predictions.slice(0, 1) : [],
+      backTestingExists: !!tradeType1Data.backtesting,
+      backTestingData: tradeType1Data.backtesting || {},
+      rawDataStructure: Object.keys(tradeType1Data || {})
+    };
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(debugInfo);
+    
+  } catch (error) {
+    res.json({
+      error: error.message,
+      debugStatus: "Error accessing tradeType1Data"
+    });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
+});
+
 // Sheets integration (keep working)
 app.get('/tesla-percentage', (req, res) => {
   const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
