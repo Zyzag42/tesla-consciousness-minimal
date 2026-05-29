@@ -296,6 +296,48 @@ app.get('/tesla-test-enhanced', (req, res) => {
     res.status(200).json([]);
   }
 });
+
+// Enhanced calculation functions (SAFE VERSION)
+function calculateBasicTeslaMetrics(prediction) {
+  // Simple safe calculations
+  const buySignals = [
+    prediction.frequency37Hz === 'BUY' ? 1 : 0,
+    prediction.frequency69Hz === 'BUY' ? 1 : 0, 
+    prediction.frequency94Hz === 'BUY' ? 1 : 0
+  ].reduce((a, b) => a + b, 0);
+  
+  const sellSignals = 3 - buySignals;
+  
+  return {
+    buySignalsCount: buySignals,
+    sellSignalsCount: sellSignals,
+    bullishWeight: ((buySignals / 3) * 100).toFixed(1),
+    marketBias: buySignals >= 2 ? 'BULLISH' : 'BEARISH',
+    teslaStrengthLevel: prediction.electromagneticStrength > 70 ? 'HIGH' : 'MEDIUM'
+  };
+}
+
+// Updated test endpoint with basic calculations
+app.get('/tesla-basic-enhanced', (req, res) => {
+  try {
+    const enhancedData = tradeType1Data.predictions.map(pred => ({
+      ...pred,
+      // Add basic Tesla calculations
+      teslaMetrics: calculateBasicTeslaMetrics(pred),
+      // Simple derived fields
+      priceMovement: ((pred.pricePrediction - pred.currentPrice) / pred.currentPrice * 100).toFixed(2),
+      confidenceLevel: pred.electromagneticStrength > 75 ? 'HIGH' : pred.electromagneticStrength > 50 ? 'MEDIUM' : 'LOW'
+    }));
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(enhancedData);
+    
+  } catch (error) {
+    console.error('❌ Basic enhanced error:', error.message);
+    res.status(200).json([]);
+  }
+});
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
