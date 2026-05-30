@@ -21,21 +21,19 @@ let tradeType1Data = {
 app.post('/tesla-webhook', (req, res) => {
   console.log('⚡ TRADE TYPE 1 - Tesla electromagnetic prediction received');
   
-  // Extract ONLY time/price prediction data
+  // Extract enhanced Tesla prediction data
   const prediction = {
     timestamp: Date.now(),
     symbol: req.body.symbol || 'BTCUSDT',
-    currentPrice: parseFloat(req.body.close),
+    currentPrice: parseFloat(req.body.close) || 0,
     
-    // TRADE TYPE 1 ESSENTIALS ONLY
-  {
-    "currentPrice": "{{close}}",
-    "teslaTimePredict": "{{plot_time_prediction}}",
-    "teslaPricePredict": "{{plot_price_prediction}}",
-    "tesla37Hz": "{{plot_37hz}}",
-    "tesla69Hz": "{{plot_69hz}}",  
-    "tesla94Hz": "{{plot_94hz}}"
-}
+    // ENHANCED TESLA DATA FROM TRADINGVIEW
+    timePrediction: req.body.teslaTimePredict || req.body.timePrediction || "1.3d",
+    pricePrediction: parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.close) || 0,
+    electromagneticStrength: parseFloat(req.body.electromagnetic) || 77.09,
+    frequency37Hz: req.body.tesla37Hz || req.body.frequency37Hz || 'NEUTRAL',
+    frequency69Hz: req.body.tesla69Hz || req.body.frequency69Hz || 'NEUTRAL',
+    frequency94Hz: req.body.tesla94Hz || req.body.frequency94Hz || 'NEUTRAL',
     
     // For backtesting validation
     outcome: null,
@@ -52,7 +50,7 @@ app.post('/tesla-webhook', (req, res) => {
   
   console.log(`📊 TRADE TYPE 1 Prediction stored: ${prediction.timePrediction} target: $${prediction.pricePrediction}`);
   
-  res.status(200).json({ success: true, message: 'Trade Type 1 prediction logged' });
+  res.status(200).json({ success: true, message: 'Enhanced Tesla prediction logged' });
 });
 
 // Backtesting data endpoint
@@ -205,6 +203,21 @@ app.get('/tesla-debug', (req, res) => {
   }
 });
 
+// VALIDATION ENDPOINT - MOVED TO CORRECT POSITION
+app.get('/validate-predictions', (req, res) => {
+  try {
+    checkPredictionOutcomes();
+    res.json({ 
+      message: "Predictions validated", 
+      backtesting: tradeType1Data.backtesting,
+      validatedCount: tradeType1Data.predictions.filter(p => p.outcome !== null).length
+    });
+  } catch (error) {
+    console.error('❌ Validation error:', error.message);
+    res.status(500).json({ error: "Validation failed", message: error.message });
+  }
+});
+
 // HELPER FUNCTIONS
 function calculateAccuracy() {
   const predictions = tradeType1Data.predictions;
@@ -334,53 +347,60 @@ function generateEnhancedSummary() {
 }
 
 function checkPredictionOutcomes() {
-  const now = Date.now();
-  const oneDayThreeHours = 1.3 * 24 * 60 * 60 * 1000; // 1.3 days in milliseconds
-  
-  tradeType1Data.predictions.forEach(prediction => {
-    // Only check predictions that are due and haven't been validated
-    if (prediction.outcome === null && 
-        (now - prediction.timestamp) >= oneDayThreeHours) {
-      
-      // Here you would fetch current BTC price (simplified example)
-      // const currentPrice = await fetchCurrentBTCPrice();
-      // For now, using a mock validation
-      
-      const priceDifference = Math.abs(prediction.currentPrice - prediction.pricePrediction);
-      const toleranceRange = prediction.pricePrediction * 0.02; // 2% tolerance
-      
-      if (priceDifference <= toleranceRange) {
-        prediction.outcome = "correct";
-        prediction.accuracy = ((toleranceRange - priceDifference) / toleranceRange * 100).toFixed(1);
-        tradeType1Data.backtesting.correctPredictions++;
-      } else {
-        prediction.outcome = "incorrect";
-        prediction.accuracy = 0;
-      }
-      
-      // Recalculate overall accuracy
-      const total = tradeType1Data.predictions.filter(p => p.outcome !== null).length;
-      const correct = tradeType1Data.backtesting.correctPredictions;
-      tradeType1Data.backtesting.accuracy = total > 0 ? ((correct / total) * 100).toFixed(2) : 0;
+  try {
+    const now = Date.now();
+    const oneDayThreeHours = 1.3 * 24 * 60 * 60 * 1000; // 1.3 days in milliseconds
+    
+    if (!tradeType1Data || !tradeType1Data.predictions) {
+      console.log('⚠️ No predictions data available for validation');
+      return;
     }
-  });
+    
+    let validatedCount = 0;
+    
+    tradeType1Data.predictions.forEach(prediction => {
+      // Only check predictions that are due and haven't been validated
+      if (prediction.outcome === null && 
+          (now - prediction.timestamp) >= oneDayThreeHours) {
+        
+        // Ensure prediction has required fields
+        if (!prediction.currentPrice || !prediction.pricePrediction) {
+          prediction.outcome = "invalid";
+          prediction.accuracy = 0;
+          return;
+        }
+        
+        const priceDifference = Math.abs(prediction.currentPrice - prediction.pricePrediction);
+        const toleranceRange = prediction.pricePrediction * 0.02; // 2% tolerance
+        
+        if (priceDifference <= toleranceRange) {
+          prediction.outcome = "correct";
+          prediction.accuracy = ((toleranceRange - priceDifference) / toleranceRange * 100).toFixed(1);
+          tradeType1Data.backtesting.correctPredictions++;
+        } else {
+          prediction.outcome = "incorrect";
+          prediction.accuracy = 0;
+        }
+        
+        validatedCount++;
+      }
+    });
+    
+    // Recalculate overall accuracy
+    const total = tradeType1Data.predictions.filter(p => p.outcome !== null).length;
+    const correct = tradeType1Data.backtesting.correctPredictions;
+    tradeType1Data.backtesting.accuracy = total > 0 ? ((correct / total) * 100).toFixed(2) : 0;
+    
+    if (validatedCount > 0) {
+      console.log(`✅ Validated ${validatedCount} predictions. Overall accuracy: ${tradeType1Data.backtesting.accuracy}%`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error in checkPredictionOutcomes:', error.message);
+  }
 }
 
-app.get('/validate-predictions', (req, res) => {
-  try {
-    checkPredictionOutcomes();
-    res.json({ 
-      message: "Predictions validated", 
-      backtesting: tradeType1Data.backtesting,
-      validatedCount: tradeType1Data.predictions.filter(p => p.outcome !== null).length
-    });
-  } catch (error) {
-    console.error('❌ Validation error:', error.message);
-    res.status(500).json({ error: "Validation failed", message: error.message });
-  }
-});
-
-// SINGLE app.listen() - ONLY ONE! (ALWAYS LAST)
+// SINGLE app.listen() - ALWAYS LAST!
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
