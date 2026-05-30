@@ -332,7 +332,6 @@ function generateEnhancedSummary() {
     lastUpdate: formatTimestamp(Date.now())
   };
 }
-// Add this function BEFORE app.listen() with other helper functions
 
 function checkPredictionOutcomes() {
   const now = Date.now();
@@ -367,13 +366,21 @@ function checkPredictionOutcomes() {
   });
 }
 
-// Call this function periodically (add after other endpoints)
 app.get('/validate-predictions', (req, res) => {
-  checkPredictionOutcomes();
-  res.json({ message: "Predictions validated", backtesting: tradeType1Data.backtesting });
+  try {
+    checkPredictionOutcomes();
+    res.json({ 
+      message: "Predictions validated", 
+      backtesting: tradeType1Data.backtesting,
+      validatedCount: tradeType1Data.predictions.filter(p => p.outcome !== null).length
+    });
+  } catch (error) {
+    console.error('❌ Validation error:', error.message);
+    res.status(500).json({ error: "Validation failed", message: error.message });
+  }
 });
 
-// SINGLE app.listen() - ONLY ONE!
+// SINGLE app.listen() - ONLY ONE! (ALWAYS LAST)
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
