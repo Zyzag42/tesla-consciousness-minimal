@@ -28,12 +28,14 @@ app.post('/tesla-webhook', (req, res) => {
     currentPrice: parseFloat(req.body.close),
     
     // TRADE TYPE 1 ESSENTIALS ONLY
-    timePrediction: req.body.timePrediction || "1.3d",
-    pricePrediction: parseFloat(req.body.pricePrediction),
-    electromagneticStrength: parseFloat(req.body.electromagnetic) || 77.09,
-    frequency37Hz: req.body.frequency37Hz || 'NEUTRAL',
-    frequency69Hz: req.body.frequency69Hz || 'NEUTRAL',
-    frequency94Hz: req.body.frequency94Hz || 'NEUTRAL',
+  {
+    "currentPrice": "{{close}}",
+    "teslaTimePredict": "{{plot_time_prediction}}",
+    "teslaPricePredict": "{{plot_price_prediction}}",
+    "tesla37Hz": "{{plot_37hz}}",
+    "tesla69Hz": "{{plot_69hz}}",  
+    "tesla94Hz": "{{plot_94hz}}"
+}
     
     // For backtesting validation
     outcome: null,
@@ -330,6 +332,46 @@ function generateEnhancedSummary() {
     lastUpdate: formatTimestamp(Date.now())
   };
 }
+// Add this function BEFORE app.listen() with other helper functions
+
+function checkPredictionOutcomes() {
+  const now = Date.now();
+  const oneDayThreeHours = 1.3 * 24 * 60 * 60 * 1000; // 1.3 days in milliseconds
+  
+  tradeType1Data.predictions.forEach(prediction => {
+    // Only check predictions that are due and haven't been validated
+    if (prediction.outcome === null && 
+        (now - prediction.timestamp) >= oneDayThreeHours) {
+      
+      // Here you would fetch current BTC price (simplified example)
+      // const currentPrice = await fetchCurrentBTCPrice();
+      // For now, using a mock validation
+      
+      const priceDifference = Math.abs(prediction.currentPrice - prediction.pricePrediction);
+      const toleranceRange = prediction.pricePrediction * 0.02; // 2% tolerance
+      
+      if (priceDifference <= toleranceRange) {
+        prediction.outcome = "correct";
+        prediction.accuracy = ((toleranceRange - priceDifference) / toleranceRange * 100).toFixed(1);
+        tradeType1Data.backtesting.correctPredictions++;
+      } else {
+        prediction.outcome = "incorrect";
+        prediction.accuracy = 0;
+      }
+      
+      // Recalculate overall accuracy
+      const total = tradeType1Data.predictions.filter(p => p.outcome !== null).length;
+      const correct = tradeType1Data.backtesting.correctPredictions;
+      tradeType1Data.backtesting.accuracy = total > 0 ? ((correct / total) * 100).toFixed(2) : 0;
+    }
+  });
+}
+
+// Call this function periodically (add after other endpoints)
+app.get('/validate-predictions', (req, res) => {
+  checkPredictionOutcomes();
+  res.json({ message: "Predictions validated", backtesting: tradeType1Data.backtesting });
+});
 
 // SINGLE app.listen() - ONLY ONE!
 app.listen(PORT, () => {
