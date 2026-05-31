@@ -18,24 +18,25 @@ let tradeType1Data = {
 };
 
 // TradingView webhook for TRADE TYPE 1 ONLY
+// Enhanced webhook for plot data
 app.post('/tesla-webhook', (req, res) => {
   console.log('⚡ TRADE TYPE 1 - Tesla electromagnetic prediction received');
   
-  // Extract enhanced Tesla prediction data
   const prediction = {
     timestamp: Date.now(),
     symbol: req.body.symbol || 'BTCUSDT',
     currentPrice: parseFloat(req.body.close) || 0,
     
-    // ENHANCED TESLA DATA FROM TRADINGVIEW
-    timePrediction: req.body.teslaTimePredict || req.body.timePrediction || "1.3d",
-    pricePrediction: parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.close) || 0,
-    electromagneticStrength: parseFloat(req.body.electromagnetic) || 77.09,
-    frequency37Hz: req.body.tesla37Hz || req.body.frequency37Hz || 'NEUTRAL',
-    frequency69Hz: req.body.tesla69Hz || req.body.frequency69Hz || 'NEUTRAL',
-    frequency94Hz: req.body.tesla94Hz || req.body.frequency94Hz || 'NEUTRAL',
+    // ENHANCED TESLA DATA FROM PLOTS
+    timePrediction: req.body.teslaTimePredict || req.body.p0 || "1.3d",
+    pricePrediction: parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.p1) || parseFloat(req.body.close) || 0,
+    electromagneticStrength: parseFloat(req.body.electromagnetic) || parseFloat(req.body.p2) || 77.09,
     
-    // For backtesting validation
+    // FREQUENCY DATA FROM PLOTS
+    frequency37Hz: req.body.p3 || req.body.frequency37Hz || interpretFrequencyValue(req.body.p3) || 'NEUTRAL',
+    frequency69Hz: req.body.p4 || req.body.frequency69Hz || interpretFrequencyValue(req.body.p4) || 'NEUTRAL',
+    frequency94Hz: req.body.p5 || req.body.frequency94Hz || interpretFrequencyValue(req.body.p5) || 'NEUTRAL',
+    
     outcome: null,
     accuracy: null
   };
@@ -43,7 +44,6 @@ app.post('/tesla-webhook', (req, res) => {
   tradeType1Data.predictions.push(prediction);
   tradeType1Data.backtesting.totalPredictions++;
   
-  // Keep last 100 predictions for backtesting
   if (tradeType1Data.predictions.length > 100) {
     tradeType1Data.predictions = tradeType1Data.predictions.slice(-100);
   }
@@ -53,10 +53,16 @@ app.post('/tesla-webhook', (req, res) => {
   res.status(200).json({ success: true, message: 'Enhanced Tesla prediction logged' });
 });
 
-// Backtesting data endpoint
-app.get('/trade-type-1-data', (req, res) => {
-  res.json(tradeType1Data);
-});
+// Helper function to interpret frequency values
+function interpretFrequencyValue(value) {
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) return 'NEUTRAL';
+  
+  // Interpret numeric plot values as BUY/SELL signals
+  if (numValue > 0.5) return 'BUY';
+  if (numValue < -0.5) return 'SELL';
+  return 'NEUTRAL';
+}
 
 // Sheets integration endpoint
 app.get('/tesla-percentage', (req, res) => {
