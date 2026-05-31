@@ -17,8 +17,7 @@ let tradeType1Data = {
   }
 };
 
-// TradingView webhook for TRADE TYPE 1 ONLY
-// Enhanced webhook for plot data
+// Enhanced webhook for plot data (SINGLE DEFINITION)
 app.post('/tesla-webhook', (req, res) => {
   console.log('⚡ TRADE TYPE 1 - Tesla electromagnetic prediction received');
   
@@ -29,12 +28,13 @@ app.post('/tesla-webhook', (req, res) => {
     
     // ENHANCED TESLA DATA FROM PLOTS
     timePrediction: req.body.p0 || req.body.teslaTimePredict || "1.3d",
-    pricePrediction: parseFloat(req.body.p1) || parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.close),
+    pricePrediction: parseFloat(req.body.p1) || parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.close) || 0,
     electromagneticStrength: parseFloat(req.body.p2) || parseFloat(req.body.electromagnetic) || 77.09,
-    frequency37Hz: interpretPlotValue(req.body.p3) || 'NEUTRAL',
-    frequency69Hz: interpretPlotValue(req.body.p4) || 'NEUTRAL',
-    frequency94Hz: interpretPlotValue(req.body.p5) || 'NEUTRAL'
+    frequency37Hz: interpretFrequencyValue(req.body.p3) || 'NEUTRAL',
+    frequency69Hz: interpretFrequencyValue(req.body.p4) || 'NEUTRAL',
+    frequency94Hz: interpretFrequencyValue(req.body.p5) || 'NEUTRAL',  // ← FIXED: Added comma
     
+    // For backtesting validation
     outcome: null,
     accuracy: null
   };
@@ -51,31 +51,19 @@ app.post('/tesla-webhook', (req, res) => {
   res.status(200).json({ success: true, message: 'Enhanced Tesla prediction logged' });
 });
 
-// Helper function to interpret frequency values
-function interpretFrequencyValue(value) {
-  const numValue = parseFloat(value);
-  if (isNaN(numValue)) return 'NEUTRAL';
-  
-  // Interpret numeric plot values as BUY/SELL signals
-  if (numValue > 0.5) return 'BUY';
-  if (numValue < -0.5) return 'SELL';
-  return 'NEUTRAL';
-}
-
-// TradingView webhook for TRADE TYPE 1 ONLY (your existing enhanced webhook)
-app.post('/tesla-webhook', (req, res) => {
-  // ... your enhanced webhook code ...
-});
-
-// MISSING ENDPOINTS - ADD THESE
+// SINGLE trade-type-1-data endpoint
 app.get('/trade-type-1-data', (req, res) => {
   try {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(tradeType1Data);
   } catch (error) {
+    console.error('❌ Trade-type-1-data error:', error.message);
     res.status(500).json({ error: "Data access error" });
   }
 });
 
+// SINGLE tesla-percentage endpoint
 app.get('/tesla-percentage', (req, res) => {
   try {
     const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
@@ -88,6 +76,7 @@ app.get('/tesla-percentage', (req, res) => {
   }
 });
 
+// Debug endpoint
 app.get('/tesla-debug', (req, res) => {
   try {
     const debugInfo = {
@@ -104,28 +93,6 @@ app.get('/tesla-debug', (req, res) => {
   } catch (error) {
     res.json({ error: error.message });
   }
-});
-
-app.get('/trade-type-1-data', (req, res) => {
-  try {
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(tradeType1Data);
-  } catch (error) {
-    console.error('❌ Trade-type-1-data error:', error.message);
-    res.status(500).json({ error: "Data access error" });
-  }
-});
-
-// Continue with your other endpoints...
-// Sheets integration endpoint
-app.get('/tesla-percentage', (req, res) => {
-  const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
-  const electromagnetic = latestPrediction ? latestPrediction.electromagneticStrength : 77.09;
-  
-  res.setHeader('Content-Type', 'text/plain');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.send(electromagnetic.toString());
 });
 
 // Enhanced backtesting results
@@ -162,6 +129,17 @@ app.get('/backtesting-results', (req, res) => {
     res.status(500).json({ error: "Backtesting error", message: error.message });
   }
 });
+
+// Helper function (CORRECT NAME)
+function interpretFrequencyValue(value) {
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) return 'NEUTRAL';
+  
+  // Interpret numeric plot values as BUY/SELL signals
+  if (numValue > 0.5) return 'BUY';
+  if (numValue < -0.5) return 'SELL';
+  return 'NEUTRAL';
+}
 
 // Sheets predictions endpoint
 app.get('/sheets-predictions', (req, res) => {
@@ -464,3 +442,4 @@ function checkPredictionOutcomes() {
 app.listen(PORT, () => {
   console.log(`🚀 TRADE TYPE 1 Tesla webhook running on port ${PORT}`);
 });
+
