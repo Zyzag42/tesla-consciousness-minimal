@@ -64,6 +64,24 @@ function interpretFrequencyValue(value) {
   return 'NEUTRAL';
 }
 
+// TradingView webhook for TRADE TYPE 1 ONLY (your existing enhanced webhook)
+app.post('/tesla-webhook', (req, res) => {
+  // ... your enhanced webhook code ...
+});
+
+// ADD THIS MISSING ENDPOINT HERE
+app.get('/trade-type-1-data', (req, res) => {
+  try {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(tradeType1Data);
+  } catch (error) {
+    console.error('❌ Trade-type-1-data error:', error.message);
+    res.status(500).json({ error: "Data access error" });
+  }
+});
+
+// Continue with your other endpoints...
 // Sheets integration endpoint
 app.get('/tesla-percentage', (req, res) => {
   const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
