@@ -28,14 +28,12 @@ app.post('/tesla-webhook', (req, res) => {
     currentPrice: parseFloat(req.body.close) || 0,
     
     // ENHANCED TESLA DATA FROM PLOTS
-    timePrediction: req.body.teslaTimePredict || req.body.p0 || "1.3d",
-    pricePrediction: parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.p1) || parseFloat(req.body.close) || 0,
-    electromagneticStrength: parseFloat(req.body.electromagnetic) || parseFloat(req.body.p2) || 77.09,
-    
-    // FREQUENCY DATA FROM PLOTS
-    frequency37Hz: req.body.p3 || req.body.frequency37Hz || interpretFrequencyValue(req.body.p3) || 'NEUTRAL',
-    frequency69Hz: req.body.p4 || req.body.frequency69Hz || interpretFrequencyValue(req.body.p4) || 'NEUTRAL',
-    frequency94Hz: req.body.p5 || req.body.frequency94Hz || interpretFrequencyValue(req.body.p5) || 'NEUTRAL',
+    timePrediction: req.body.p0 || req.body.teslaTimePredict || "1.3d",
+    pricePrediction: parseFloat(req.body.p1) || parseFloat(req.body.teslaPricePredict) || parseFloat(req.body.close),
+    electromagneticStrength: parseFloat(req.body.p2) || parseFloat(req.body.electromagnetic) || 77.09,
+    frequency37Hz: interpretPlotValue(req.body.p3) || 'NEUTRAL',
+    frequency69Hz: interpretPlotValue(req.body.p4) || 'NEUTRAL',
+    frequency94Hz: interpretPlotValue(req.body.p5) || 'NEUTRAL'
     
     outcome: null,
     accuracy: null
@@ -69,7 +67,45 @@ app.post('/tesla-webhook', (req, res) => {
   // ... your enhanced webhook code ...
 });
 
-// ADD THIS MISSING ENDPOINT HERE
+// MISSING ENDPOINTS - ADD THESE
+app.get('/trade-type-1-data', (req, res) => {
+  try {
+    res.json(tradeType1Data);
+  } catch (error) {
+    res.status(500).json({ error: "Data access error" });
+  }
+});
+
+app.get('/tesla-percentage', (req, res) => {
+  try {
+    const latestPrediction = tradeType1Data.predictions[tradeType1Data.predictions.length - 1];
+    const electromagnetic = latestPrediction ? latestPrediction.electromagneticStrength : 77.09;
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(electromagnetic.toString());
+  } catch (error) {
+    res.status(500).send('77.09');
+  }
+});
+
+app.get('/tesla-debug', (req, res) => {
+  try {
+    const debugInfo = {
+      dataExists: !!tradeType1Data,
+      predictionsExists: !!tradeType1Data.predictions,
+      predictionsLength: tradeType1Data.predictions ? tradeType1Data.predictions.length : 0,
+      predictionsType: typeof tradeType1Data.predictions,
+      sampleData: tradeType1Data.predictions ? tradeType1Data.predictions.slice(0, 1) : [],
+      backTestingExists: !!tradeType1Data.backtesting,
+      backTestingData: tradeType1Data.backtesting || {},
+      rawDataStructure: Object.keys(tradeType1Data || {})
+    };
+    res.json(debugInfo);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
 app.get('/trade-type-1-data', (req, res) => {
   try {
     res.setHeader('Content-Type', 'application/json');
