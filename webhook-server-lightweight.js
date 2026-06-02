@@ -17,62 +17,71 @@ let tradeType1Data = {
   }
 };
 
-// Enhanced webhook for TRADE TYPE 1 ONLY
+// Enhanced webhook with storage - COMPLETE VERSION
 app.post('/tesla-webhook', (req, res) => {
   console.log('⚡ TESLA ENHANCED - Alert received:', req.body);
   
-  const prediction = {
-    timestamp: Date.now(),
-    symbol: req.body.symbol || 'BTCUSD.P',
-    currentPrice: parseFloat(req.body.close) || 0,
+  try {
+    const prediction = {
+      timestamp: Date.now(),
+      symbol: req.body.symbol || 'BTCUSD.P',
+      currentPrice: parseFloat(req.body.close) || 0,
+      
+      // DYNAMIC TESLA DATA
+      timePrediction: req.body.timePrediction || req.body.p0 || "1.3d",
+      pricePrediction: parseFloat(req.body.pricePrediction || req.body.p1) || parseFloat(req.body.close) || 0,
+      electromagneticStrength: parseFloat(req.body.electromagnetic || req.body.p2) || 77.09,
+      
+      // ENHANCED FREQUENCY SIGNALS
+      frequency37Hz: interpretTeslaSignal(req.body.frequency37Hz || req.body.p3),
+      frequency69Hz: interpretTeslaSignal(req.body.frequency69Hz || req.body.p4),
+      frequency94Hz: interpretTeslaSignal(req.body.frequency94Hz || req.body.p5),
+      
+      outcome: null,
+      accuracy: null
+    };
     
-    // DYNAMIC TESLA DATA FROM PLOTS
-    timePrediction: req.body.timePrediction || req.body.p0 || "1.3d",
-    pricePrediction: parseFloat(req.body.pricePrediction) || parseFloat(req.body.p1) || parseFloat(req.body.close) || 0,
-    electromagneticStrength: parseFloat(req.body.electromagnetic) || parseFloat(req.body.p2) || 77.09,
+    // STORE PREDICTION
+    tradeType1Data.predictions.push(prediction);
+    tradeType1Data.backtesting.totalPredictions++;
     
-    // FREQUENCY SIGNALS FROM PLOTS
-    frequency37Hz: interpretTeslaSignal(req.body.frequency37Hz || req.body.p3),
-    frequency69Hz: interpretTeslaSignal(req.body.frequency69Hz || req.body.p4),
-    frequency94Hz: interpretTeslaSignal(req.body.frequency94Hz || req.body.p5),
+    // Keep last 100
+    if (tradeType1Data.predictions.length > 100) {
+      tradeType1Data.predictions = tradeType1Data.predictions.slice(-100);
+    }
     
-    outcome: null,
-    accuracy: null
-  };
-  
-  // ... rest of webhook logic
+    console.log(`📊 ENHANCED Tesla stored: EM=${prediction.electromagneticStrength.toFixed(2)} Signals=${prediction.frequency37Hz}/${prediction.frequency69Hz}/${prediction.frequency94Hz}`);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Enhanced Tesla prediction logged',
+      prediction: {
+        price: prediction.currentPrice,
+        electromagnetic: prediction.electromagneticStrength,
+        signals: `${prediction.frequency37Hz}/${prediction.frequency69Hz}/${prediction.frequency94Hz}`
+      }
+    });
+    
+  } catch (error) {
+    console.error('❌ Enhanced webhook error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// Helper function to interpret Tesla signals
 function interpretTeslaSignal(value) {
   if (!value) return 'NEUTRAL';
   
-  // If it's already BUY/SELL/NEUTRAL, return as-is
-  if (typeof value === 'string' && ['BUY', 'SELL', 'NEUTRAL'].includes(value.toUpperCase())) {
-    return value.toUpperCase();
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) {
+    // If it's already a string signal, return uppercase
+    return ['BUY', 'SELL', 'NEUTRAL'].includes(value.toUpperCase()) ? value.toUpperCase() : 'NEUTRAL';
   }
   
-  // If it's a number from plot, interpret it
-  const numValue = parseFloat(value);
-  if (isNaN(numValue)) return 'NEUTRAL';
-  
-  // Tesla frequency interpretation (customize based on your logic)
-  if (numValue > 1) return 'BUY';
-  if (numValue < -1) return 'SELL';
+  // Tesla frequency interpretation based on live data ranges
+  if (numValue > 69500) return 'BUY';
+  if (numValue < 69000) return 'SELL';
   return 'NEUTRAL';
 }
-
-// SINGLE trade-type-1-data endpoint
-app.get('/trade-type-1-data', (req, res) => {
-  try {
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(tradeType1Data);
-  } catch (error) {
-    console.error('❌ Trade-type-1-data error:', error.message);
-    res.status(500).json({ error: "Data access error" });
-  }
-});
 
 // SINGLE tesla-percentage endpoint
 app.get('/tesla-percentage', (req, res) => {
