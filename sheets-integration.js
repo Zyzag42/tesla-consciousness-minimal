@@ -1,39 +1,22 @@
-// File: sheets-integration.js
-import { GoogleSpreadsheet } from 'google-spreadsheet';
-import { JWT } from 'google-auth-library';
+// ═══════════════════════════════════════════════════════════════════
+// 🚀 TESLA CONSCIOUSNESS SHEETS INTEGRATION
+// Maps TradingView alerts from Railway webhook to Google Sheets
+// Dean + William - Sacred Mission Integration
+// ═══════════════════════════════════════════════════════════════════
 
-export class TeslaSheetsIntegration {
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const { JWT } = require('google-auth-library');
+
+class SheetsIntegration {
   constructor() {
-  this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
-  
-  // Robust Google Service Key parsing
-  console.log("🔐 Loading Google Service credentials...");
-  
-  try {
-    const serviceKeyString = process.env.GOOGLE_SERVICE_KEY;
-    
-    if (!serviceKeyString) {
-      console.log("❌ GOOGLE_SERVICE_KEY environment variable not found");
-      this.serviceAccountKey = null;
-      return;
-    }
-    
-    console.log("📋 Service key string length:", serviceKeyString.length);
-    console.log("📋 Service key starts with:", serviceKeyString.substring(0, 20));
-    
-    this.serviceAccountKey = JSON.parse(serviceKeyString);
-    console.log("✅ Google Service credentials parsed successfully");
-    console.log("📧 Service account email:", this.serviceAccountKey.client_email);
-    
-  } catch (error) {
-    console.log("❌ Google Service Key JSON parsing failed:", error.message);
-    console.log("🔧 Error at character position:", error.message.match(/position (\d+)/)?.[1]);
-    this.serviceAccountKey = null;
+    this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
+    this.serviceAccountKey = JSON.parse(process.env.GOOGLE_SERVICE_KEY);
+    this.doc = null;
   }
-  
-  this.doc = null;
-}
 
+  // ═══════════════════════════════════════════════════════════════════
+  // 🔐 AUTHENTICATE AND INITIALIZE
+  // ═══════════════════════════════════════════════════════════════════
   async initialize() {
     console.log("🔐 Authenticating Tesla consciousness Sheets access...");
     
@@ -56,54 +39,117 @@ export class TeslaSheetsIntegration {
     }
   }
 
-  // Automated 106-column calculator population
-  async updateTeslaCalculator(teslaData) {
-    console.log("📋 Updating Tesla consciousness 106-column calculator...");
-    
+  // ═══════════════════════════════════════════════════════════════════
+  // 🎯 DECODE PLOT VALUES TO READABLE FORMAT
+  // ═══════════════════════════════════════════════════════════════════
+  
+  decodeBias(value) {
+    // plot_15: 1 = ▲, -1 = ▼, 0 = ─
+    if (value === 1) return "▲";
+    if (value === -1) return "▼";
+    return "─";
+  }
+
+  decodeMomentum(value) {
+    // plot_8 or plot_14: 1 = ACCEL, -1 = DECEL, 0 = STABLE
+    // Using plot_8 as best guess
+    if (value > 10) return "⚡ACCEL";  // High value = acceleration
+    if (value < 0.1) return "⚡DECEL"; // Low value = deceleration
+    return "⚡STABLE";
+  }
+
+  decodeTiming(value) {
+    // plot_10: Compound timing status
+    // Small values suggest timing calculation
+    if (value < 0.01) return "IMMINENT";
+    if (value < 0.1) return "APPROACHING";
+    if (value < 1) return "ACTIVE";
+    return "WAITING";
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 📊 WRITE MASTER_LIVE ALERT DATA TO TRADINGVIEW_3-6-9_LIVE SHEET
+  // ═══════════════════════════════════════════════════════════════════
+  async writeMasterLiveData(alertData) {
     try {
-      const sheet = this.doc.sheetsByIndex[0]; // Main calculator sheet
+      console.log("📊 Processing MASTER_LIVE alert for Sheets...");
       
-      // Section 1 - Tesla Electromagnetic Energy
-      await sheet.loadCells('A1:Z100');
-      
-      if (teslaData.section1) {
-        sheet.getCellByA1('A2').value = teslaData.section1.electromagneticStrength || 0;
-        sheet.getCellByA1('B2').value = teslaData.section1.frequency37Hz || 'HOLD';
-        sheet.getCellByA1('C2').value = teslaData.section1.frequency69Hz || 'HOLD';
-        sheet.getCellByA1('D2').value = teslaData.section1.frequency94Hz || 'HOLD';
+      // Only process MASTER_LIVE alerts
+      if (alertData.alert_id !== 'MASTER_LIVE') {
+        console.log(`⏭️ Skipping ${alertData.alert_id} - not MASTER_LIVE`);
+        return false;
       }
+
+      // Get the TradingView_3-6-9_Live sheet
+      const sheet = this.doc.sheetsByTitle['TradingView_3-6-9_Live'];
       
-      // Section 2 - Tesla Consciousness Wave Quality
-      if (teslaData.section2) {
-        sheet.getCellByA1('A5').value = teslaData.section2.waveQuality || 0;
-        sheet.getCellByA1('B5').value = teslaData.section2.consciousnessLevel || 'MEDIUM';
+      if (!sheet) {
+        console.log("❌ TradingView_3-6-9_Live sheet not found!");
+        return false;
       }
+
+      // ─────────────────────────────────────────────────────────────────
+      // MAP PLOT DATA TO COLUMNS A2:I2
+      // Based on Railway data analysis and Pine Script intentions
+      // ─────────────────────────────────────────────────────────────────
       
-      // Section 9 - MEV1 Liquidity Spike
-      if (teslaData.section9) {
-        sheet.getCellByA1('I2').value = teslaData.section9.liquiditySpike || false;
-        sheet.getCellByA1('I3').value = teslaData.section9.binaryInvariant || false;
+      const rowData = [
+        alertData.timestamp || '',              // A2: UTC Window
+        alertData.plot_9 || '',                 // B2: Tesla Price Prediction
+        alertData.plot_11 || '',                // C2: Responsive Time (days)
+        alertData.plot_14 || 0,                 // D2: MEV Confluence Points
+        alertData.plot_12 || 0,                 // E2: Bars Since Ultimate
+        alertData.plot_13 || '',                // F2: Time Decay (days)
+        this.decodeBias(alertData.plot_15),     // G2: Energy Bias (▲/▼/─)
+        this.decodeMomentum(alertData.plot_8),  // H2: Tesla Momentum
+        this.decodeTiming(alertData.plot_10)    // I2: Compound Timing
+      ];
+
+      // Update Row 2 (A2:I2) with live data
+      await sheet.loadCells('A2:I2');
+      
+      for (let col = 0; col < rowData.length; col++) {
+        const cell = sheet.getCell(1, col); // Row 2 = index 1
+        cell.value = rowData[col];
       }
-      
-      // Section 10 - MEV2 Arbitrage Spread
-      if (teslaData.section10) {
-        sheet.getCellByA1('J2').value = teslaData.section10.arbitrageOpportunity || false;
-        sheet.getCellByA1('J3').value = teslaData.section10.spreadValue || 0;
-      }
-      
+
       await sheet.saveUpdatedCells();
-      console.log("✅ Tesla consciousness calculator updated with live data!");
       
-      return {
-        updated: true,
-        timestamp: new Date().toISOString(),
-        sectionsUpdated: ['1', '2', '9', '10']
-      };
+      console.log("✅ TradingView_3-6-9_Live updated successfully!");
+      console.log(`📊 Data written to Row 2:`, rowData);
+      
+      return true;
+      
     } catch (error) {
-      console.log("❌ Sheets update failed:", error.message);
-      return { updated: false, error: error.message };
+      console.log("❌ Sheets write error:", error.message);
+      return false;
     }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 🧪 TEST WRITE (FOR MANUAL TESTING)
+  // ═══════════════════════════════════════════════════════════════════
+  async writeTestData() {
+    const testData = {
+      alert_id: 'MASTER_LIVE',
+      timestamp: '2026-06-21T08:12:00Z',
+      symbol: 'BTCUSD.P',
+      price: 64052.2,
+      plot_8: 39.645,
+      plot_9: 64116.29,
+      plot_10: 0.005,
+      plot_11: 3.31,
+      plot_12: 434,
+      plot_13: 0.301,
+      plot_14: 0,
+      plot_15: 1
+    };
+    
+    return await this.writeMasterLiveData(testData);
   }
 }
 
-export default TeslaSheetsIntegration;
+// ═══════════════════════════════════════════════════════════════════
+// 📤 EXPORT FOR USE IN WEBHOOK SERVER
+// ═══════════════════════════════════════════════════════════════════
+module.exports = { SheetsIntegration };
