@@ -7,7 +7,6 @@
 constructor() {
   this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
   
-  // Build service account object from individual environment variables
   this.serviceAccountKey = {
     type: "service_account",
     project_id: process.env.GOOGLE_PROJECT_ID || "tesla-consciousness-sheets2",
@@ -22,7 +21,7 @@ constructor() {
   };
   
   this.doc = null;
-}
+}}
 
   // ═══════════════════════════════════════════════════════════════════
   // 🔐 AUTHENTICATE AND INITIALIZE
