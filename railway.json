@@ -7,5 +7,12 @@
     "startCommand": "npm start",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
+  },
+  "environments": {
+    "production": {
+      "variables": {
+        "GOOGLE_SHEETS_ID": "1Ix6YESpwLsTxUA-uijPR3ozcDROxDuQkJ-1FDndaWcU"
+      }
+    }
   }
 }
