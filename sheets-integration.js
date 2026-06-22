@@ -94,7 +94,8 @@ constructor() {
         console.log(`⏭️ Skipping ${alertData.alert_id} - not MASTER_LIVE`);
         return false;
       }
-
+      await this.doc.loadInfo();
+      
       // Get the TradingView_3-6-9_Live sheet
       const sheet = this.doc.sheetsByTitle['TradingView_3-6-9_Live'];
       
