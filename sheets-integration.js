@@ -4,15 +4,19 @@
 // Dean + William - Sacred Mission Integration
 // ═══════════════════════════════════════════════════════════════════
 
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { JWT } = require('google-auth-library');
-
-class SheetsIntegration {
 constructor() {
   this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
   
+  // DEBUG: Log all environment variables
+  console.log('🔍 Environment Variables Check:');
+  console.log('  GOOGLE_SHEETS_ID:', process.env.GOOGLE_SHEETS_ID ? '✅ Present' : '❌ MISSING');
+  console.log('  GOOGLE_PROJECT_ID:', process.env.GOOGLE_PROJECT_ID ? '✅ Present' : '❌ MISSING');
+  console.log('  GOOGLE_PRIVATE_KEY_ID:', process.env.GOOGLE_PRIVATE_KEY_ID ? '✅ Present' : '❌ MISSING');
+  console.log('  GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? `✅ Present (${process.env.GOOGLE_PRIVATE_KEY.substring(0, 30)}...)` : '❌ MISSING');
+  console.log('  GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? '✅ Present' : '❌ MISSING');
+  console.log('  GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '✅ Present' : '❌ MISSING');
+  
   // Build service account object from individual environment variables
-  // This avoids JSON.parse corruption issue
   this.serviceAccountKey = {
     type: "service_account",
     project_id: process.env.GOOGLE_PROJECT_ID || "tesla-consciousness-sheets2",
@@ -25,6 +29,14 @@ constructor() {
     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
     client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.GOOGLE_CLIENT_EMAIL)}`
   };
+  
+  console.log('🔍 Service Account Object Built:');
+  console.log('  type:', this.serviceAccountKey.type);
+  console.log('  project_id:', this.serviceAccountKey.project_id);
+  console.log('  private_key_id:', this.serviceAccountKey.private_key_id ? 'Present' : 'MISSING');
+  console.log('  private_key:', this.serviceAccountKey.private_key ? 'Present' : 'MISSING');
+  console.log('  client_email:', this.serviceAccountKey.client_email);
+  console.log('  client_id:', this.serviceAccountKey.client_id);
   
   this.doc = null;
 }
