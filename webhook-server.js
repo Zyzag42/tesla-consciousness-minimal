@@ -50,24 +50,34 @@ app.post('/tesla-webhook', async (req, res) => {
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
   if (req.body.alert_id === 'MASTER_LIVE') {
-    try {
-      // Initialize sheets connection once
-      if (!sheetsInitialized) {
-        console.log('🔐 Initializing Google Sheets connection...');
-        await sheets.initialize();
-        sheetsInitialized = true;
-      }
+  console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
+  console.log('📊 Alert data:', JSON.stringify(req.body));
+  
+  try {
+    // Initialize sheets connection once
+    if (!sheetsInitialized) {
+      console.log('🔐 Initializing Google Sheets connection...');
+      console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
+      console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
       
-      // Write MASTER_LIVE data to TradingView_3-6-9_Live sheet
-      console.log('📊 Processing MASTER_LIVE alert for Sheets...');
-      await sheets.writeMasterLiveData(req.body);
-      console.log('✅ Sheets integration successful!');
-      
-    } catch (error) {
-      console.log('❌ Sheets integration error:', error.message);
-      console.log('Error details:', error);
+      await sheets.initialize();
+      sheetsInitialized = true;
+      console.log('✅ Sheets initialized successfully');
     }
+    
+    // Write MASTER_LIVE data to TradingView_3-6-9_Live sheet
+    console.log('📊 Calling writeMasterLiveData...');
+    const result = await sheets.writeMasterLiveData(req.body);
+    console.log('✅ Sheets integration successful! Result:', result);
+    
+  } catch (error) {
+    console.log('❌ Sheets integration error:', error.message);
+    console.log('❌ Error stack:', error.stack);
+    console.log('❌ Full error:', JSON.stringify(error, null, 2));
   }
+} else {
+  console.log('⏭️ Alert ID not MASTER_LIVE, skipping sheets. ID was:', req.body.alert_id);
+}
   // ═══════════════════════════════════════════════════════════════
   
   res.status(200).json({ 
