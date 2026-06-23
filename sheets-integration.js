@@ -9,48 +9,46 @@ const { JWT } = require('google-auth-library');
 
 class SheetsIntegration {
   constructor() {
-    console.log('═══════════════════════════════════════');
-    console.log('🔍 SHEETS INTEGRATION CONSTRUCTOR DEBUG');
-    console.log('═══════════════════════════════════════');
+  console.log('═══════════════════════════════════════');
+  console.log('🔍 SHEETS INTEGRATION CONSTRUCTOR DEBUG');
+  console.log('═══════════════════════════════════════');
+  
+  this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
+  console.log('📋 GOOGLE_SHEETS_ID:', this.spreadsheetId ? '✅ PRESENT' : '❌ MISSING');
+  
+  // Try base64-encoded service account first (recommended method)
+  const base64Key = process.env.GOOGLE_SERVICE_KEY_BASE64;
+  
+  if (base64Key) {
+    console.log('🔑 Loading service account from BASE64...');
+    console.log('   BASE64 length:', base64Key.length, 'characters');
     
-    // Check spreadsheet ID
-    this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
-    console.log('📋 GOOGLE_SHEETS_ID:', this.spreadsheetId ? '✅ PRESENT' : '❌ MISSING');
-    if (this.spreadsheetId) {
-      console.log('   Value:', this.spreadsheetId);
+    try {
+      // Decode base64 to JSON string
+      const jsonString = Buffer.from(base64Key, 'base64').toString('utf8');
+      console.log('   Decoded JSON length:', jsonString.length, 'characters');
+      
+      // Parse JSON to object
+      this.serviceAccountKey = JSON.parse(jsonString);
+      
+      console.log('✅ Service account loaded from BASE64 successfully!');
+      console.log('   type:', this.serviceAccountKey.type);
+      console.log('   project_id:', this.serviceAccountKey.project_id);
+      console.log('   client_email:', this.serviceAccountKey.client_email);
+      console.log('   private_key present:', this.serviceAccountKey.private_key ? 'YES' : 'NO');
+      console.log('   private_key length:', this.serviceAccountKey.private_key ? this.serviceAccountKey.private_key.length : 0);
+      
+    } catch (error) {
+      console.log('❌ BASE64 decode failed:', error.message);
+      console.log('❌ Error stack:', error.stack);
+      this.serviceAccountKey = null;
     }
     
-    // Check each credential variable
-    console.log('\n🔑 CREDENTIAL VARIABLES:');
-    console.log('   GOOGLE_PROJECT_ID:', process.env.GOOGLE_PROJECT_ID ? '✅ PRESENT' : '❌ MISSING');
-    if (process.env.GOOGLE_PROJECT_ID) {
-      console.log('   Value:', process.env.GOOGLE_PROJECT_ID);
-    }
+  } else {
+    console.log('⚠️ GOOGLE_SERVICE_KEY_BASE64 not found');
+    console.log('   Falling back to individual variables...');
     
-    console.log('   GOOGLE_PRIVATE_KEY_ID:', process.env.GOOGLE_PRIVATE_KEY_ID ? '✅ PRESENT' : '❌ MISSING');
-    if (process.env.GOOGLE_PRIVATE_KEY_ID) {
-      console.log('   Value:', process.env.GOOGLE_PRIVATE_KEY_ID.substring(0, 20) + '...');
-    }
-    
-    console.log('   GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? '✅ PRESENT' : '❌ MISSING');
-    if (process.env.GOOGLE_PRIVATE_KEY) {
-      console.log('   Length:', process.env.GOOGLE_PRIVATE_KEY.length, 'characters');
-      console.log('   Starts with:', process.env.GOOGLE_PRIVATE_KEY.substring(0, 30));
-    }
-    
-    console.log('   GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? '✅ PRESENT' : '❌ MISSING');
-    if (process.env.GOOGLE_CLIENT_EMAIL) {
-      console.log('   Value:', process.env.GOOGLE_CLIENT_EMAIL);
-    }
-    
-    console.log('   GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '✅ PRESENT' : '❌ MISSING');
-    if (process.env.GOOGLE_CLIENT_ID) {
-      console.log('   Value:', process.env.GOOGLE_CLIENT_ID);
-    }
-    
-    console.log('\n🔨 BUILDING SERVICE ACCOUNT OBJECT...');
-    
-    // Build service account object
+    // Fallback to individual variables
     this.serviceAccountKey = {
       type: "service_account",
       project_id: process.env.GOOGLE_PROJECT_ID || "tesla-consciousness-sheets2",
@@ -64,15 +62,14 @@ class SheetsIntegration {
       client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.GOOGLE_CLIENT_EMAIL || "")}`
     };
     
-    console.log('✅ Service account object built');
-    console.log('   type:', this.serviceAccountKey.type);
     console.log('   project_id:', this.serviceAccountKey.project_id);
     console.log('   client_email:', this.serviceAccountKey.client_email);
     console.log('   private_key present:', this.serviceAccountKey.private_key ? 'YES' : 'NO');
-    console.log('═══════════════════════════════════════\n');
-    
-    this.doc = null;
   }
+  
+  console.log('═══════════════════════════════════════\n');
+  this.doc = null;
+}
 
   async initialize() {
     console.log("🔐 Authenticating Tesla consciousness Sheets access...");
