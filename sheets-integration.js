@@ -4,71 +4,75 @@
 // Dean + William - Sacred Mission Integration
 // ═══════════════════════════════════════════════════════════════════
 
-constructor() {
-  console.log('═══════════════════════════════════════');
-  console.log('🔍 SHEETS INTEGRATION CONSTRUCTOR DEBUG');
-  console.log('═══════════════════════════════════════');
-  
-  // Check spreadsheet ID
-  this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
-  console.log('📋 GOOGLE_SHEETS_ID:', this.spreadsheetId ? '✅ PRESENT' : '❌ MISSING');
-  if (this.spreadsheetId) {
-    console.log('   Value:', this.spreadsheetId);
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const { JWT } = require('google-auth-library');
+
+class SheetsIntegration {
+  constructor() {
+    console.log('═══════════════════════════════════════');
+    console.log('🔍 SHEETS INTEGRATION CONSTRUCTOR DEBUG');
+    console.log('═══════════════════════════════════════');
+    
+    // Check spreadsheet ID
+    this.spreadsheetId = process.env.GOOGLE_SHEETS_ID;
+    console.log('📋 GOOGLE_SHEETS_ID:', this.spreadsheetId ? '✅ PRESENT' : '❌ MISSING');
+    if (this.spreadsheetId) {
+      console.log('   Value:', this.spreadsheetId);
+    }
+    
+    // Check each credential variable
+    console.log('\n🔑 CREDENTIAL VARIABLES:');
+    console.log('   GOOGLE_PROJECT_ID:', process.env.GOOGLE_PROJECT_ID ? '✅ PRESENT' : '❌ MISSING');
+    if (process.env.GOOGLE_PROJECT_ID) {
+      console.log('   Value:', process.env.GOOGLE_PROJECT_ID);
+    }
+    
+    console.log('   GOOGLE_PRIVATE_KEY_ID:', process.env.GOOGLE_PRIVATE_KEY_ID ? '✅ PRESENT' : '❌ MISSING');
+    if (process.env.GOOGLE_PRIVATE_KEY_ID) {
+      console.log('   Value:', process.env.GOOGLE_PRIVATE_KEY_ID.substring(0, 20) + '...');
+    }
+    
+    console.log('   GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? '✅ PRESENT' : '❌ MISSING');
+    if (process.env.GOOGLE_PRIVATE_KEY) {
+      console.log('   Length:', process.env.GOOGLE_PRIVATE_KEY.length, 'characters');
+      console.log('   Starts with:', process.env.GOOGLE_PRIVATE_KEY.substring(0, 30));
+    }
+    
+    console.log('   GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? '✅ PRESENT' : '❌ MISSING');
+    if (process.env.GOOGLE_CLIENT_EMAIL) {
+      console.log('   Value:', process.env.GOOGLE_CLIENT_EMAIL);
+    }
+    
+    console.log('   GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '✅ PRESENT' : '❌ MISSING');
+    if (process.env.GOOGLE_CLIENT_ID) {
+      console.log('   Value:', process.env.GOOGLE_CLIENT_ID);
+    }
+    
+    console.log('\n🔨 BUILDING SERVICE ACCOUNT OBJECT...');
+    
+    // Build service account object
+    this.serviceAccountKey = {
+      type: "service_account",
+      project_id: process.env.GOOGLE_PROJECT_ID || "tesla-consciousness-sheets2",
+      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      private_key: process.env.GOOGLE_PRIVATE_KEY,
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      auth_uri: "https://accounts.google.com/o/oauth2/auth",
+      token_uri: "https://oauth2.googleapis.com/token",
+      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+      client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.GOOGLE_CLIENT_EMAIL || "")}`
+    };
+    
+    console.log('✅ Service account object built');
+    console.log('   type:', this.serviceAccountKey.type);
+    console.log('   project_id:', this.serviceAccountKey.project_id);
+    console.log('   client_email:', this.serviceAccountKey.client_email);
+    console.log('   private_key present:', this.serviceAccountKey.private_key ? 'YES' : 'NO');
+    console.log('═══════════════════════════════════════\n');
+    
+    this.doc = null;
   }
-  
-  // Check each credential variable
-  console.log('\n🔑 CREDENTIAL VARIABLES:');
-  console.log('   GOOGLE_PROJECT_ID:', process.env.GOOGLE_PROJECT_ID ? '✅ PRESENT' : '❌ MISSING');
-  if (process.env.GOOGLE_PROJECT_ID) {
-    console.log('   Value:', process.env.GOOGLE_PROJECT_ID);
-  }
-  
-  console.log('   GOOGLE_PRIVATE_KEY_ID:', process.env.GOOGLE_PRIVATE_KEY_ID ? '✅ PRESENT' : '❌ MISSING');
-  if (process.env.GOOGLE_PRIVATE_KEY_ID) {
-    console.log('   Value:', process.env.GOOGLE_PRIVATE_KEY_ID.substring(0, 20) + '...');
-  }
-  
-  console.log('   GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? '✅ PRESENT' : '❌ MISSING');
-  if (process.env.GOOGLE_PRIVATE_KEY) {
-    console.log('   Length:', process.env.GOOGLE_PRIVATE_KEY.length, 'characters');
-    console.log('   Starts with:', process.env.GOOGLE_PRIVATE_KEY.substring(0, 30));
-  }
-  
-  console.log('   GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? '✅ PRESENT' : '❌ MISSING');
-  if (process.env.GOOGLE_CLIENT_EMAIL) {
-    console.log('   Value:', process.env.GOOGLE_CLIENT_EMAIL);
-  }
-  
-  console.log('   GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? '✅ PRESENT' : '❌ MISSING');
-  if (process.env.GOOGLE_CLIENT_ID) {
-    console.log('   Value:', process.env.GOOGLE_CLIENT_ID);
-  }
-  
-  console.log('\n🔨 BUILDING SERVICE ACCOUNT OBJECT...');
-  
-  // Build service account object
-  this.serviceAccountKey = {
-    type: "service_account",
-    project_id: process.env.GOOGLE_PROJECT_ID || "tesla-consciousness-sheets2",
-    private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY,
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    auth_uri: "https://accounts.google.com/o/oauth2/auth",
-    token_uri: "https://oauth2.googleapis.com/token",
-    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.GOOGLE_CLIENT_EMAIL || "")}`
-  };
-  
-  console.log('✅ Service account object built');
-  console.log('   type:', this.serviceAccountKey.type);
-  console.log('   project_id:', this.serviceAccountKey.project_id);
-  console.log('   client_email:', this.serviceAccountKey.client_email);
-  console.log('   private_key present:', this.serviceAccountKey.private_key ? 'YES' : 'NO');
-  console.log('═══════════════════════════════════════\n');
-  
-  this.doc = null;
-}
 
   async initialize() {
     console.log("🔐 Authenticating Tesla consciousness Sheets access...");
@@ -164,7 +168,7 @@ constructor() {
   async writeTestData() {
     const testData = {
       alert_id: 'MASTER_LIVE',
-      timestamp: '2026-06-22T15:00:00Z',
+      timestamp: '2026-06-23T08:00:00Z',
       symbol: 'BTCUSD.P',
       price: 65000,
       plot_8: 100,
