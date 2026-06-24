@@ -113,54 +113,71 @@ class SheetsIntegration {
   }
 
   async writeMasterLiveData(alertData) {
-    try {
-      console.log("📊 Processing MASTER_LIVE alert for Sheets...");
-      
-      if (alertData.alert_id !== 'MASTER_LIVE') {
-        console.log("⏭️ Skipping " + alertData.alert_id + " - not MASTER_LIVE");
-        return false;
-      }
-
-      await this.doc.loadInfo();
-
-      const sheet = this.doc.sheetsByTitle['TradingView_3-6-9_Live'];
-      
-      if (!sheet) {
-        console.log("❌ TradingView_3-6-9_Live sheet not found!");
-        return false;
-      }
-
-      const rowData = [
-        alertData.timestamp || '',
-        alertData.plot_9 || '',
-        alertData.plot_11 || '',
-        alertData.plot_14 || 0,
-        alertData.plot_12 || 0,
-        alertData.plot_13 || '',
-        this.decodeBias(alertData.plot_15),
-        this.decodeMomentum(alertData.plot_8),
-        this.decodeTiming(alertData.plot_10)
-      ];
-
-      await sheet.loadCells('A2:I2');
-      
-      for (let col = 0; col < rowData.length; col++) {
-        const cell = sheet.getCell(1, col);
-        cell.value = rowData[col];
-      }
-
-      await sheet.saveUpdatedCells();
-      
-      console.log("✅ TradingView_3-6-9_Live updated successfully!");
-      console.log("📊 Data written to Row 2:", rowData);
-      
-      return true;
-      
-    } catch (error) {
-      console.log("❌ Sheets write error:", error.message);
+  try {
+    console.log("📊 Processing MASTER_LIVE alert for Sheets...");
+    
+    if (alertData.alert_id !== 'MASTER_LIVE') {
+      console.log("⏭️ Skipping " + alertData.alert_id + " - not MASTER_LIVE");
       return false;
     }
+
+    await this.doc.loadInfo();
+
+    const sheet = this.doc.sheetsByTitle['TradingView_3-6-9_Live'];
+    
+    if (!sheet) {
+      console.log("❌ TradingView_3-6-9_Live sheet not found!");
+      return false;
+    }
+
+    // Map PLOT data to columns A:I
+    const rowData = [
+      alertData.timestamp || '',              // A: UTC Window
+      alertData.plot_9 || '',                 // B: Tesla Price Prediction
+      alertData.plot_11 || '',                // C: Responsive Time (days)
+      alertData.plot_14 || 0,                 // D: MEV Confluence Points
+      alertData.plot_12 || 0,                 // E: Bars Since Event
+      alertData.plot_13 || '',                // F: Time Decay (days)
+      this.decodeBias(alertData.plot_15),     // G: Energy Bias
+      this.decodeMomentum(alertData.plot_8),  // H: Tesla Momentum
+      this.decodeTiming(alertData.plot_10)    // I: Compound Timing
+    ];
+
+    // Load cells for Row 2 and historical rows (track last 50 alerts)
+    const maxHistoryRows = 50;
+    await sheet.loadCells(`A2:I${maxHistoryRows + 2}`);
+
+    // Shift existing data down by one row (newest at top)
+    // Start from bottom and work up to avoid overwriting
+    for (let row = maxHistoryRows; row >= 2; row--) {
+      for (let col = 0; col < 9; col++) {
+        const sourceCell = sheet.getCell(row - 1, col); // Previous row
+        const targetCell = sheet.getCell(row, col);     // Current row
+        targetCell.value = sourceCell.value;
+      }
+    }
+
+    // Write new data to Row 2
+    for (let col = 0; col < rowData.length; col++) {
+      const cell = sheet.getCell(1, col); // Row 2 (0-indexed as 1)
+      cell.value = rowData[col];
+    }
+
+    // Save all updated cells
+    await sheet.saveUpdatedCells();
+    
+    console.log("✅ TradingView_3-6-9_Live updated successfully!");
+    console.log("📊 New data inserted at Row 2, historical data shifted down");
+    console.log("📊 Latest data:", rowData);
+    
+    return true;
+    
+  } catch (error) {
+    console.log("❌ Sheets write error:", error.message);
+    console.log("Error details:", error);
+    return false;
   }
+}
 
   async writeTestData() {
     const testData = {
