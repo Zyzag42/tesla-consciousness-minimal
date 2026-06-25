@@ -141,16 +141,20 @@ class SheetsIntegration {
       this.decodeBias(alertData.plot_15),     // G: Energy Bias
       this.decodeMomentum(alertData.plot_8),  // H: Tesla Momentum
       this.decodeTiming(alertData.plot_10)    // I: Compound Timing
+      alertData.sine_37 || 0, // J: 37Hz Sine Wave (NEW!)
+      alertData.sine_69 || 0, // K: 69Hz Sine Wave (NEW!)
+      alertData.sine_94 || 0 // L: 94Hz Sine Wave (NEW!)
     ];
 
     // Load cells for Row 2 and historical rows (track last 50 alerts)
     const maxHistoryRows = 50;
-    await sheet.loadCells(`A2:I${maxHistoryRows + 2}`);
+    await sheet.loadCells(`A2:L${maxHistoryRows + 2}`);
 
     // Shift existing data down by one row (newest at top)
     // Start from bottom and work up to avoid overwriting
     for (let row = maxHistoryRows; row >= 2; row--) {
-      for (let col = 0; col < 9; col++) {
+      for (let col = 0; col < 1; col++) {
+      for (let col = 0; col < 1; col++) {
         const sourceCell = sheet.getCell(row - 1, col); // Previous row
         const targetCell = sheet.getCell(row, col);     // Current row
         targetCell.value = sourceCell.value;
