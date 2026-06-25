@@ -126,7 +126,7 @@ class SheetsIntegration {
     const sheet = this.doc.sheetsByTitle['TradingView_3_6_9_Live'];
     
     if (!sheet) {
-      console.log("❌ TradingView_3_6_9_Live sheet not found!");
+      console.log("❌ TradingView_3-6-9_Live sheet not found!");
       return false;
     }
 
@@ -170,7 +170,7 @@ class SheetsIntegration {
     // Save all updated cells
     await sheet.saveUpdatedCells();
     
-    console.log("✅ TradingView_3_6_9_Live updated successfully!");
+    console.log("✅ TradingView_3-6-9_Live updated successfully!");
     console.log("📊 New data inserted at Row 2, historical data shifted down");
     console.log("📊 Latest data:", rowData);
     
