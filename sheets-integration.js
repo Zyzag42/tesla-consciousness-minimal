@@ -126,11 +126,11 @@ class SheetsIntegration {
     const sheet = this.doc.sheetsByTitle['TradingView_3_6_9_Live'];
     
     if (!sheet) {
-      console.log("❌ TradingView_3-6-9_Live sheet not found!");
+      console.log("❌ TradingView_3_6_9_Live sheet not found!");
       return false;
     }
 
-    // Map PLOT data to columns A:I
+    // Map PLOT data to columns A:L (12 columns)
     const rowData = [
       alertData.timestamp || '',              // A: UTC Window
       alertData.plot_9 || '',                 // B: Tesla Price Prediction
@@ -140,10 +140,10 @@ class SheetsIntegration {
       alertData.plot_13 || '',                // F: Time Decay (days)
       this.decodeBias(alertData.plot_15),     // G: Energy Bias
       this.decodeMomentum(alertData.plot_8),  // H: Tesla Momentum
-      this.decodeTiming(alertData.plot_10)    // I: Compound Timing
-      alertData.sine_37 || 0, // J: 37Hz Sine Wave (NEW!)
-      alertData.sine_69 || 0, // K: 69Hz Sine Wave (NEW!)
-      alertData.sine_94 || 0 // L: 94Hz Sine Wave (NEW!)
+      this.decodeTiming(alertData.plot_10),   // I: Compound Timing (COMMA ADDED!)
+      alertData.sine_37 || 0,                 // J: 37Hz Sine Wave
+      alertData.sine_69 || 0,                 // K: 69Hz Sine Wave
+      alertData.sine_94 || 0                  // L: 94Hz Sine Wave (no comma - last item)
     ];
 
     // Load cells for Row 2 and historical rows (track last 50 alerts)
@@ -151,28 +151,26 @@ class SheetsIntegration {
     await sheet.loadCells(`A2:L${maxHistoryRows + 2}`);
 
     // Shift existing data down by one row (newest at top)
-    // Start from bottom and work up to avoid overwriting
     for (let row = maxHistoryRows; row >= 2; row--) {
-      for (let col = 0; col < 1; col++) {
-      for (let col = 0; col < 1; col++) {
-        const sourceCell = sheet.getCell(row - 1, col); // Previous row
-        const targetCell = sheet.getCell(row, col);     // Current row
+      for (let col = 0; col < 12; col++) {  // 12 columns (A through L)
+        const sourceCell = sheet.getCell(row - 1, col);
+        const targetCell = sheet.getCell(row, col);
         targetCell.value = sourceCell.value;
       }
     }
 
     // Write new data to Row 2
     for (let col = 0; col < rowData.length; col++) {
-      const cell = sheet.getCell(1, col); // Row 2 (0-indexed as 1)
+      const cell = sheet.getCell(1, col);
       cell.value = rowData[col];
     }
 
     // Save all updated cells
     await sheet.saveUpdatedCells();
     
-    console.log("✅ TradingView_3-6-9_Live updated successfully!");
+    console.log("✅ TradingView_3_6_9_Live updated successfully!");
     console.log("📊 New data inserted at Row 2, historical data shifted down");
-    console.log("📊 Latest data:", rowData);
+    console.log("📊 Latest data (12 columns):", rowData);
     
     return true;
     
@@ -183,24 +181,24 @@ class SheetsIntegration {
   }
 }
 
-  async writeTestData() {
-    const testData = {
-      alert_id: 'MASTER_LIVE',
-      timestamp: '2026-06-23T08:00:00Z',
-      symbol: 'BTCUSD.P',
-      price: 65000,
-      plot_8: 100,
-      plot_9: 65100,
-      plot_10: 0.005,
-      plot_11: 3.5,
-      plot_12: 456,
-      plot_13: 0.5,
-      plot_14: 0,
-      plot_15: 1
-    };
-    
-    return await this.writeMasterLiveData(testData);
-  }
+async writeTestData() {
+  const testData = {
+    alert_id: 'MASTER_LIVE',
+    timestamp: '2026-06-23T08:00:00Z',
+    symbol: 'BTCUSD.P',
+    price: 65000,
+    plot_8: 100,
+    plot_9: 65100,
+    plot_10: 0.005,
+    plot_11: 3.5,
+    plot_12: 456,
+    plot_13: 0.5,
+    plot_14: 0,
+    plot_15: 1,
+    sine_37: 62500,
+    sine_69: 62450,
+    sine_94: 62550
+  };
+  
+  return await this.writeMasterLiveData(testData);
 }
-
-module.exports = { SheetsIntegration };
