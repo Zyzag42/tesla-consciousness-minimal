@@ -130,7 +130,7 @@ class SheetsIntegration {
         return false;
       }
 
-      // Map PLOT data to columns A:L (12 columns)
+      // Map PLOT data to columns A:M (13 columns)
       const rowData = [
         alertData.timestamp || '',              // A: UTC Window
         alertData.plot_9 || '',                 // B: Tesla Price Prediction
@@ -143,8 +143,9 @@ class SheetsIntegration {
         this.decodeTiming(alertData.plot_10),   // I: Compound Timing
         alertData.sine_37 || 0,                 // J: 37Hz Sine Wave
         alertData.sine_69 || 0,                 // K: 69Hz Sine Wave
-        alertData.sine_94 || 0                  // L: 94Hz Sine Wave
-      ];
+        alertData.sine_94 || 0,                 // L: 94Hz Sine Wave
+        alertData.compound_zone || 0            // M: Compound Zone 
+     ];
 
       // Load cells for Row 2 and historical rows (track last 50 alerts)
       const maxHistoryRows = 50;
