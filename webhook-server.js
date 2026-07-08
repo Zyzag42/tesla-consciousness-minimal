@@ -49,7 +49,7 @@ app.post('/tesla-webhook', async (req, res) => {
   // ═══════════════════════════════════════════════════════════════
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
-  if (req.body.alert_id === 'MASTER_LIVE') {
+  if (req.body.alert_id === 'MASTER_LIVE' || req.body.includes?.('TESLA_MASTER_LIVE')) {
   console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
   console.log('📊 Alert data:', JSON.stringify(req.body));
   
