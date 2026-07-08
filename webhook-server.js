@@ -49,14 +49,26 @@ app.post('/tesla-webhook', async (req, res) => {
   // ═══════════════════════════════════════════════════════════════
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
-  // Accept any alert with data (not checking specific alert_id for this webhook)
-  // Check if this looks like MASTER_LIVE data (has plot fields or specific data)
+  // Accept any data sent to /tesla-webhook endpoint
   if (req.body && typeof req.body === 'object') {
-    const hasPlotData = req.body.tesla_target_price !== undefined || 
-                        req.body.plot_0 !== undefined ||
-                        req.body.sine_37 !== undefined;
+    console.log('🎯 Alert received - Starting sheets integration');
+    console.log('📊 Alert data:', JSON.stringify(req.body));
     
-    const isMASTER_LIVE = req.body.alert_id === 'MASTER_LIVE';
+    // Check if this has plot data
+    const hasPlotData = req.body.tesla_target_price !== undefined || 
+                        req.body.sine_37 !== undefined ||
+                        Object.keys(req.body).length > 2;
+    
+    if (!hasPlotData) {
+      console.log('📨 Alert trigger received, waiting for plot data...');
+      return res.status(200).send('Alert trigger acknowledged');
+    }
+    
+    console.log('📊 Processing alert with plot data for Sheets...');
+    
+    try {
+      // Initialize sheets connection once
+      if (!sheetsInitialized) {
     
     if (isMASTER_LIVE || hasPlotData) {
       console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
