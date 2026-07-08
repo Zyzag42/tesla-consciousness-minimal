@@ -49,21 +49,22 @@ app.post('/tesla-webhook', async (req, res) => {
   // ═══════════════════════════════════════════════════════════════
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
-  if (req.body.alert_id === 'MASTER_LIVE' || req.body.includes?.('TESLA_MASTER_LIVE')) {
-  console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
-  console.log('📊 Alert data:', JSON.stringify(req.body));
-  
-  try {
-    // Initialize sheets connection once
-    if (!sheetsInitialized) {
-      console.log('🔐 Initializing Google Sheets connection...');
-      console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
-      console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
-      
-      await sheets.initialize();
-      sheetsInitialized = true;
-      console.log('✅ Sheets initialized successfully');
-    }
+  // Accept any alert with data (not checking specific alert_id for this webhook)
+  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+    console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
+    console.log('📊 Alert data:', JSON.stringify(req.body));
+    
+    try {
+      // Initialize sheets connection once
+      if (!sheetsInitialized) {
+        console.log('🔧 Initializing Google Sheets connection...');
+        console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
+        console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
+        
+        await sheets.initialize();
+        sheetsInitialized = true;
+        console.log('✅ Sheets initialized successfully!');
+      }
     
     // Write MASTER_LIVE data to TradingView_3-6-9_Live sheet
     console.log('📊 Calling writeMasterLiveData...');
