@@ -46,10 +46,9 @@ app.post('/tesla-webhook', async (req, res) => {
   
   latestTeslaAlerts.lastUpdate = Date.now();
   
-  // ═══════════════════════════════════════════════════════════════
+ // ═══════════════════════════════════════════════════════════════
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
-  // Accept any data sent to /tesla-webhook endpoint
   if (req.body && typeof req.body === 'object') {
     console.log('🎯 Alert received - Starting sheets integration');
     console.log('📊 Alert data:', JSON.stringify(req.body));
@@ -69,28 +68,32 @@ app.post('/tesla-webhook', async (req, res) => {
     try {
       // Initialize sheets connection once
       if (!sheetsInitialized) {
-    
-    if (isMASTER_LIVE || hasPlotData) {
-      console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
-      console.log('📊 Alert data:', JSON.stringify(req.body));
+        console.log('🔧 Initializing Google Sheets connection...');
+        console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
+        console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
+        
+        await sheets.initialize();
+        sheetsInitialized = true;
+        console.log('✅ Sheets initialized successfully!');
+      }
       
-      // ... rest of processing
-    } else {
-      console.log('⏭️ Alert ID not MASTER_LIVE and no plot data, skipping sheets. ID was:', req.body.alert_id);
-      return res.status(200).send('Alert received but not MASTER_LIVE');
+      // Write data to sheets
+      console.log('📝 Writing data to TradingView_3_6_9_Live sheet...');
+      await sheets.writeMasterLiveData(req.body);
+      console.log('✅ Data written successfully!');
+      
+      return res.status(200).send('Success');
+      
+    } catch (error) {
+      console.error('❌ Error processing MASTER_LIVE alert:', error.message);
+      console.error('📊 Stack trace:', error.stack);
+      return res.status(500).send('Error: ' + error.message);
     }
   }
-  // ═══════════════════════════════════════════════════════════════
   
-  res.status(200).json({ 
-    success: true, 
-    message: 'Tesla consciousness alert processed' 
-  });
-});
-
-// Get Tesla alerts
-app.get('/tesla-webhook', (req, res) => {
-  res.json(latestTeslaAlerts);
+  // If no body or not an object, skip
+  console.log('⏭️ Alert received but no valid data, skipping');
+  return res.status(200).send('No data to process');
 });
 
 // Simple Tesla percentage endpoint for Sheets
