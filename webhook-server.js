@@ -50,35 +50,24 @@ app.post('/tesla-webhook', async (req, res) => {
   // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
   // ═══════════════════════════════════════════════════════════════
   // Accept any alert with data (not checking specific alert_id for this webhook)
-  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
-    console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
-    console.log('📊 Alert data:', JSON.stringify(req.body));
+  // Check if this looks like MASTER_LIVE data (has plot fields or specific data)
+  if (req.body && typeof req.body === 'object') {
+    const hasPlotData = req.body.tesla_target_price !== undefined || 
+                        req.body.plot_0 !== undefined ||
+                        req.body.sine_37 !== undefined;
     
-    try {
-      // Initialize sheets connection once
-      if (!sheetsInitialized) {
-        console.log('🔧 Initializing Google Sheets connection...');
-        console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
-        console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
-        
-        await sheets.initialize();
-        sheetsInitialized = true;
-        console.log('✅ Sheets initialized successfully!');
-      }
+    const isMASTER_LIVE = req.body.alert_id === 'MASTER_LIVE';
     
-    // Write MASTER_LIVE data to TradingView_3-6-9_Live sheet
-    console.log('📊 Calling writeMasterLiveData...');
-    const result = await sheets.writeMasterLiveData(req.body);
-    console.log('✅ Sheets integration successful! Result:', result);
-    
-  } catch (error) {
-    console.log('❌ Sheets integration error:', error.message);
-    console.log('❌ Error stack:', error.stack);
-    console.log('❌ Full error:', JSON.stringify(error, null, 2));
+    if (isMASTER_LIVE || hasPlotData) {
+      console.log('🎯 MASTER_LIVE detected - Starting sheets integration');
+      console.log('📊 Alert data:', JSON.stringify(req.body));
+      
+      // ... rest of processing
+    } else {
+      console.log('⏭️ Alert ID not MASTER_LIVE and no plot data, skipping sheets. ID was:', req.body.alert_id);
+      return res.status(200).send('Alert received but not MASTER_LIVE');
+    }
   }
-} else {
-  console.log('⏭️ Alert ID not MASTER_LIVE, skipping sheets. ID was:', req.body.alert_id);
-}
   // ═══════════════════════════════════════════════════════════════
   
   res.status(200).json({ 
