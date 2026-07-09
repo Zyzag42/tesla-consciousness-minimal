@@ -242,5 +242,6 @@ class SheetsIntegration {
   }
 }
 
+}
 
 module.exports = { SheetsIntegration };
