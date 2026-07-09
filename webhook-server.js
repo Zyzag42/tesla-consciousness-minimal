@@ -46,50 +46,42 @@ app.post('/tesla-webhook', async (req, res) => {
   
   latestTeslaAlerts.lastUpdate = Date.now();
   
- // ═══════════════════════════════════════════════════════════════
-  // 📊 NEW: SHEETS INTEGRATION FOR MASTER_LIVE ALERTS
+// ═══════════════════════════════════════════════════════════════
+  // 🚀 UNIVERSAL TESLA ALERT HANDLER
+  // Accepts ALL alert types and routes appropriately
   // ═══════════════════════════════════════════════════════════════
-  if (req.body && typeof req.body === 'object') {
-    console.log('🎯 Alert received - Starting sheets integration');
-    console.log('📊 Alert data:', JSON.stringify(req.body));
-    
-    // Check if this has plot data
-    const hasPlotData = req.body.tesla_target_price !== undefined || 
-                        req.body.sine_37 !== undefined ||
-                        Object.keys(req.body).length > 2;
-    
-    if (!hasPlotData) {
-      console.log('📨 Alert trigger received, waiting for plot data...');
-      return res.status(200).send('Alert trigger acknowledged');
+  
+  console.log('🎯 Tesla alert received');
+  console.log('📊 Alert data:', JSON.stringify(req.body));
+  
+  // Extract alert information
+  const alertData = req.body;
+  const alertId = alertData.alert_id || 'UNKNOWN';
+  
+  try {
+    // Initialize sheets connection once
+    if (!sheetsInitialized) {
+      console.log('🔧 Initializing Google Sheets connection...');
+      await sheets.initialize();
+      sheetsInitialized = true;
+      console.log('✅ Sheets initialized successfully!');
     }
     
-    console.log('📊 Processing alert with plot data for Sheets...');
+    // Process based on alert type
+    console.log(`📨 Processing alert type: ${alertId}`);
     
-    try {
-      // Initialize sheets connection once
-      if (!sheetsInitialized) {
-        console.log('🔧 Initializing Google Sheets connection...');
-        console.log('📋 Spreadsheet ID:', process.env.GOOGLE_SHEETS_ID ? 'Present' : 'MISSING');
-        console.log('🔑 Client email:', process.env.GOOGLE_CLIENT_EMAIL ? 'Present' : 'MISSING');
-        
-        await sheets.initialize();
-        sheetsInitialized = true;
-        console.log('✅ Sheets initialized successfully!');
-      }
-      
-      // Write data to sheets
-      console.log('📝 Writing data to TradingView_3_6_9_Live sheet...');
-      await sheets.writeMasterLiveData(req.body);
-      console.log('✅ Data written successfully!');
-      
-      return res.status(200).send('Success');
-      
-    } catch (error) {
-      console.error('❌ Error processing MASTER_LIVE alert:', error.message);
-      console.error('📊 Stack trace:', error.stack);
-      return res.status(500).send('Error: ' + error.message);
-    }
+    // Store all alerts in a general log
+    await sheets.writeAlertData(alertData);
+    console.log('✅ Alert data written to sheets');
+    
+    return res.status(200).send('Success');
+    
+  } catch (error) {
+    console.error('❌ Error processing alert:', error.message);
+    console.error('📊 Stack trace:', error.stack);
+    return res.status(500).send('Error: ' + error.message);
   }
+});
   
   // If no body or not an object, skip
   console.log('⏭️ Alert received but no valid data, skipping');
