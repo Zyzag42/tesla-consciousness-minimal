@@ -203,6 +203,44 @@ class SheetsIntegration {
     
     return await this.writeMasterLiveData(testData);
   }
+  /**
+  * Write any alert data to sheets
+  * Universal handler for all alert types
+  */
+  async writeAlertData(alertData) {
+  console.log('📝 Writing alert data to sheets...');
+
+  try {
+  const sheet = this.doc.sheetsByTitle['TradingView_Alerts_Log'];
+
+  if (!sheet) {
+  console.log('⚠️ TradingView_Alerts_Log sheet not found, creating...');
+  await this.doc.addSheet({
+  title: 'TradingView_Alerts_Log',
+  headerValues: ['Timestamp', 'Alert ID', 'Symbol', 'Price', 'Full Data']
+  });
+  }
+
+  // Prepare row data
+  const rowData = [
+  alertData.timestamp || new Date().toISOString(),
+  alertData.alert_id || 'UNKNOWN',
+  alertData.symbol || 'N/A',
+  alertData.price || 'N/A',
+  JSON.stringify(alertData)
+  ];
+
+  // Insert at row 2 (push historical data down)
+  await sheet.addRow(rowData, { insert: true, raw: false });
+
+  console.log('✅ Alert data written successfully');
+  return true;
+
+  } catch (error) {
+  console.error('❌ Error writing alert data:', error);
+  throw error;
+  }
 }
+
 
 module.exports = { SheetsIntegration };
