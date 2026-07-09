@@ -82,11 +82,6 @@ app.post('/tesla-webhook', async (req, res) => {
     return res.status(500).send('Error: ' + error.message);
   }
 });
-  
-  // If no body or not an object, skip
-  console.log('⏭️ Alert received but no valid data, skipping');
-  return res.status(200).send('No data to process');
-});
 
 // Simple Tesla percentage endpoint for Sheets
 app.get('/tesla-percentage', (req, res) => {
