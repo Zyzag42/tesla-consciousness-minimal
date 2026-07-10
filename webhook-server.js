@@ -54,9 +54,26 @@ app.post('/tesla-webhook', async (req, res) => {
   console.log('🎯 Tesla alert received');
   console.log('📊 Alert data:', JSON.stringify(req.body));
   
-  // Extract alert information
-  const alertData = req.body;
-  const alertId = alertData.alert_id || 'UNKNOWN';
+  // Extract alert information - handle both formats
+const alertData = req.body;
+
+// Check for alert_id first, then extract from alert field, then alertNumber
+let alertId = alertData.alert_id || 'UNKNOWN';
+
+if (alertId === 'UNKNOWN' && alertData.alert) {
+// Extract from "alert" field like "ALERT HS7 - Tesla..."
+const alertMatch = alertData.alert.match(/ALERT\s+([A-Z0-9]+)/i);
+if (alertMatch) {
+alertId = alertMatch[1]; // Gets "HS7", "MEV1", "AC3", etc.
+}
+}
+
+if (alertId === 'UNKNOWN' && alertData.alertNumber) {
+// Use alertNumber as fallback
+alertId = alertData.alertNumber;
+}
+
+console.log(`📨 Processing alert type: ${alertId}`);
   
   try {
     // Initialize sheets connection once
