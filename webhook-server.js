@@ -60,25 +60,35 @@ app.post('/tesla-webhook', async (req, res) => {
   // Try to get alert ID from multiple possible fields
   let alertId = alertData.alert_id || 'UNKNOWN';
   
-  // If not found, try to extract from "alert" field
+  // If not found, try to extract from "alert" field with multiple patterns
   if (alertId === 'UNKNOWN' && alertData.alert) {
-    // Pattern: "ALERT HS7 - Description" -> extract "HS7"
-    const alertMatch = alertData.alert.match(/ALERT\s+([A-Z0-9]+)/i);
-    if (alertMatch) {
-      alertId = alertMatch[1];
-      console.log(`📋 Extracted alert ID from alert field: ${alertId}`);
+    // Try multiple regex patterns to extract alert ID
+    const patterns = [
+      /ALERT\s+([A-Z]+\d+)/i,           // "ALERT AC3 - Description"
+      /^([A-Z]+\d+)\s*[-:]/i,           // "AC3 - Description" or "AC3: Description"
+      /"alert["\s:]*([A-Z]+\d+)/i,      // In JSON: "alert":"AC3"
+      /alertNumber["\s:]*([A-Z]+\d+)/i  // "alertNumber":"AC3"
+    ];
+    
+    for (const pattern of patterns) {
+      const match = alertData.alert.match(pattern);
+      if (match && match[1]) {
+        alertId = match[1].toUpperCase();
+        console.log(`📋 Extracted alert ID from alert field: ${alertId} (pattern: ${pattern})`);
+        break;
+      }
     }
   }
   
-  // If still not found, try alertNumber
+  // If still not found, try alertNumber field
   if (alertId === 'UNKNOWN' && alertData.alertNumber) {
-    alertId = alertData.alertNumber;
+    alertId = String(alertData.alertNumber).toUpperCase();
     console.log(`📋 Using alertNumber as ID: ${alertId}`);
   }
   
   // If still unknown and has alertGroup, use that
   if (alertId === 'UNKNOWN' && alertData.alertGroup) {
-    alertId = `${alertData.alertGroup}_ALERT`;
+    alertId = `${alertData.alertGroup}_ALERT`.toUpperCase();
     console.log(`📋 Using alertGroup as ID: ${alertId}`);
   }
   
@@ -93,7 +103,7 @@ app.post('/tesla-webhook', async (req, res) => {
       console.log('✅ Sheets initialized successfully!');
     }
     
-    // Store all alerts in a general log
+    // Store all alerts with extracted ID
     await sheets.writeAlertData({...alertData, alert_id: alertId});
     console.log('✅ Alert data written to sheets');
     
