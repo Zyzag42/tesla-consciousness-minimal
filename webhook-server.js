@@ -54,26 +54,35 @@ app.post('/tesla-webhook', async (req, res) => {
   console.log('🎯 Tesla alert received');
   console.log('📊 Alert data:', JSON.stringify(req.body));
   
-  // Extract alert information - handle both formats
-const alertData = req.body;
-
-// Check for alert_id first, then extract from alert field, then alertNumber
-let alertId = alertData.alert_id || 'UNKNOWN';
-
-if (alertId === 'UNKNOWN' && alertData.alert) {
-// Extract from "alert" field like "ALERT HS7 - Tesla..."
-const alertMatch = alertData.alert.match(/ALERT\s+([A-Z0-9]+)/i);
-if (alertMatch) {
-alertId = alertMatch[1]; // Gets "HS7", "MEV1", "AC3", etc.
-}
-}
-
-if (alertId === 'UNKNOWN' && alertData.alertNumber) {
-// Use alertNumber as fallback
-alertId = alertData.alertNumber;
-}
-
-console.log(`📨 Processing alert type: ${alertId}`);
+  // Extract alert information - handle multiple formats
+  const alertData = req.body;
+  
+  // Try to get alert ID from multiple possible fields
+  let alertId = alertData.alert_id || 'UNKNOWN';
+  
+  // If not found, try to extract from "alert" field
+  if (alertId === 'UNKNOWN' && alertData.alert) {
+    // Pattern: "ALERT HS7 - Description" -> extract "HS7"
+    const alertMatch = alertData.alert.match(/ALERT\s+([A-Z0-9]+)/i);
+    if (alertMatch) {
+      alertId = alertMatch[1];
+      console.log(`📋 Extracted alert ID from alert field: ${alertId}`);
+    }
+  }
+  
+  // If still not found, try alertNumber
+  if (alertId === 'UNKNOWN' && alertData.alertNumber) {
+    alertId = alertData.alertNumber;
+    console.log(`📋 Using alertNumber as ID: ${alertId}`);
+  }
+  
+  // If still unknown and has alertGroup, use that
+  if (alertId === 'UNKNOWN' && alertData.alertGroup) {
+    alertId = `${alertData.alertGroup}_ALERT`;
+    console.log(`📋 Using alertGroup as ID: ${alertId}`);
+  }
+  
+  console.log(`📨 Processing alert type: ${alertId}`);
   
   try {
     // Initialize sheets connection once
@@ -84,11 +93,8 @@ console.log(`📨 Processing alert type: ${alertId}`);
       console.log('✅ Sheets initialized successfully!');
     }
     
-    // Process based on alert type
-    console.log(`📨 Processing alert type: ${alertId}`);
-    
     // Store all alerts in a general log
-    await sheets.writeAlertData(alertData);
+    await sheets.writeAlertData({...alertData, alert_id: alertId});
     console.log('✅ Alert data written to sheets');
     
     return res.status(200).send('Success');
